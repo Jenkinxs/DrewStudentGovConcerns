@@ -590,7 +590,7 @@
      This single URL handles suggestions, meetings, AND initiatives.
 ──────────────────────────────────────────────────────── -->
 <script>
-  const SHEET_URL = "https://script.google.com/macros/s/AKfycbwPbmQ9-NSVwz1DeEVPrOBqy3olIWzyX_ooTQf_QZ6emGsNnCvMT8uwpNGCZiVqYl-0/exec";
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbz5snIoc0Fwp-YQMLofYioQYkblCi1Nq_5b7CV2mHR_46rV_x3ir-aKGvFt37-ouHX1/exec";
 </script>
 
 <!-- TOP BAR -->
@@ -1145,17 +1145,129 @@ async function loadMeetings() {
   }
 
   // ── INIT ─────────────────────────────────────────────────────────────
-  window.addEventListener('DOMContentLoaded', () => {
-    if (SHEET_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') { //this line is to display an incorrect URL error message if the sheet isn't set up
-      document.getElementById('announcementsGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live announcements.</div>`;
-      document.getElementById('meetingsList').innerHTML = `<div class="error-state">Connect your Google Sheet to see live meetings.</div>`;
-      document.getElementById('initiativesGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live initiatives.</div>`;
+  window.addEventListener('DOMContentLoaded', async () => {
+    if (SHEET_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+      const errorMsg = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live data.</div>`;
+      document.getElementById('announcementsGrid').innerHTML = errorMsg;
+      document.getElementById('meetingsList').innerHTML = errorMsg;
+      document.getElementById('initiativesGrid').innerHTML = errorMsg;
       return;
     }
-    loadAnnouncements();
-    loadMeetings();
-    loadInitiatives();
+
+    try {
+      // One request to rule them all
+      const response = await fetch(`${SHEET_URL}?action=getAll`);
+      const data = await response.json();
+
+      // Distribute the data to the rendering functions
+      renderAnnouncements(data.announcements);
+      renderMeetings(data.meetings);
+      renderInitiatives(data.initiatives);
+      
+    } catch (e) {
+      console.error("SGA Dashboard Load Error:", e);
+      const errorHtml = (msg) => `<div class="error-state" style="grid-column: 1/-1;">${msg}</div>`;
+      document.getElementById('announcementsGrid').innerHTML = errorHtml("Could not load dashboard data.");
+    }
   });
+
+  // ── RENDERING FUNCTIONS (Logic moved from load functions) ──────────────
+
+  function renderAnnouncements(list) {
+    const grid = document.getElementById('announcementsGrid');
+    const items = list.slice(0, 3);
+
+    if (!items.length) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+        <p>No announcements at this time.</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = items.map((a, i) => {
+      const isFeatured = i === 0;
+      const tagClass = (a.tag || 'general').toLowerCase() === 'new' ? 'new' : (a.tag || '').toLowerCase() === 'urgent' ? 'urgent' : '';
+      const dateStr = a.date ? new Date(a.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+      const linkHtml = a.link ? `<a href="${escHtml(a.link)}" class="ann-link" target="_blank">Read more <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>` : '';
+
+      return `
+        <div class="announcement-card${isFeatured ? ' featured' : ''}">
+          <div class="announcement-img" style="background:${ANN_BG[i % ANN_BG.length]}">${ANN_ICONS[i % ANN_ICONS.length]}</div>
+          <div class="announcement-content">
+            <div class="ann-meta">
+              ${a.tag ? `<span class="ann-tag ${tagClass}">${escHtml(a.tag)}</span>` : ''}
+              ${dateStr ? `<span class="ann-date">${dateStr}</span>` : ''}
+            </div>
+            <h3>${escHtml(a.title)}</h3>
+            <p>${escHtml(a.body)}</p>
+            ${linkHtml}
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderMeetings(meetings) {
+    const el = document.getElementById('meetingsList');
+    if (!meetings.length) {
+      el.innerHTML = `<div class="empty-state">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <p>No upcoming meetings scheduled.</p>
+      </div>`;
+      return;
+    }
+
+    el.innerHTML = meetings.map(m => {
+      const dt = parseMeetingDateTime(m.date, m.time);
+      let month = "N/A", day = "--", meetingDateTimeLabel = "";
+
+      if (dt) {
+        month = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'America/New_York' }).format(dt);
+        day = new Intl.DateTimeFormat('en-US', { day: 'numeric', timeZone: 'America/New_York' }).format(dt);
+        meetingDateTimeLabel = formatMeetingDateTime(dt);
+      }
+      
+      const displayDateTime = meetingDateTimeLabel || `${m.date}${m.time ? ' ' + normalizeTimeText(m.time) : ''}`;
+      const isOpen = (m.access || '').toLowerCase() !== 'members';
+      
+      return `
+        <div class="meeting-item">
+          <div class="meeting-date-box"><div class="month">${month}</div><div class="day">${day}</div></div>
+          <div class="meeting-info">
+            <h4>${escHtml(m.title)}</h4>
+            <p>${escHtml(m.location)} · ${escHtml(displayDateTime)}</p>
+            <span class="meeting-badge ${isOpen ? 'open' : 'members'}">${isOpen ? 'Open to All Students' : 'Members Only'}</span>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function renderInitiatives(initiatives) {
+    const el = document.getElementById('initiativesGrid');
+    if (!initiatives.length) {
+      el.innerHTML = `<div class="empty-state" style="grid-column: 1/-1;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <p>No active initiatives at this time.</p>
+      </div>`;
+      document.getElementById('initiativeCount').textContent = '0';
+      return;
+    }
+
+    const activeCount = initiatives.filter(i => (i.status || '').toLowerCase() !== 'completed').length;
+    document.getElementById('initiativeCount').textContent = activeCount;
+
+    el.innerHTML = initiatives.map((initiative, idx) => {
+      const statusVal = (initiative.status || 'In Progress').trim();
+      const statusClass = statusVal.toLowerCase().includes('pending') ? 'pending' : statusVal.toLowerCase().includes('complete') ? 'completed' : '';
+      return `
+        <div class="initiative-card">
+          <div class="initiative-icon">${ICONS[idx % ICONS.length]}</div>
+          <h3>${escHtml(initiative.title)}</h3>
+          <p>${escHtml(initiative.description)}</p>
+          <div class="initiative-status ${statusClass}">${escHtml(statusVal)}</div>
+        </div>`;
+    }).join('');
+  }
 </script>
 
 </body>
