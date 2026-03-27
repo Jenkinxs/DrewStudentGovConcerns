@@ -895,6 +895,65 @@
 
   const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
+  function normalizeDateText(raw) {
+    if (!raw) return '';
+    // Accept formats like "March, 30, 2026" and normalize to "March 30 2026".
+    const txt = String(raw).trim().replace(/,/g, ' ').replace(/\s+/g, ' ').trim();
+    return txt;
+  }
+
+  function normalizeTimeText(raw) {
+    if (!raw) return '';
+    let txt = String(raw).trim();
+    txt = txt.replace(/\s*(AM|PM)\s*$/i, '$1'); // trim around AM/PM
+    txt = txt.replace(/^(\d{1,2}:\d{2})(AM|PM)$/i, '$1 $2'); // 1000AM -> 10:00 AM
+    txt = txt.replace(/^(\d{1,2})(AM|PM)$/i, '$1 $2'); // 10AM -> 10 AM
+    return txt;
+  }
+
+  function parseMeetingDateTime(dateText, timeText) {
+    const datePart = normalizeDateText(dateText);
+    const timePart = normalizeTimeText(timeText);
+    if (!datePart && !timePart) return null;
+    if (!datePart && timePart) return null; // avoid treating time-only as 1899 date
+
+    // Prefer combining both pieces for a concrete day/time object.
+    let candidate = datePart;
+    if (timePart) candidate += ' ' + timePart;
+
+    let dt = new Date(candidate);
+    if (isNaN(dt.getTime())) {
+      // Last-resort: parse with ISO date anchor if raw date is a sheet date like YYYY-MM-DD
+      if (/^\d{4}-\d{2}-\d{2}$/.test(datePart)) {
+        dt = new Date(datePart + 'T' + (timePart || '12:00') + ':00');
+      } else {
+        dt = null;
+      }
+    }
+
+    if (dt && dt.getFullYear() === 1899) {
+      // Never display the default JavaScript "time-only" epoch behavior
+      return null;
+    }
+
+    return dt && !isNaN(dt.getTime()) ? dt : null;
+  }
+
+  function formatMeetingDateTime(dt) {
+    if (!dt) return '';
+    const locale = 'en-US';
+    const timezone = 'America/New_York';
+    const weekday = new Intl.DateTimeFormat(locale, { weekday: 'short', timeZone: timezone }).format(dt);
+    const month = new Intl.DateTimeFormat(locale, { month: 'long', timeZone: timezone }).format(dt);
+    const day = new Intl.DateTimeFormat(locale, { day: 'numeric', timeZone: timezone }).format(dt);
+    const year = new Intl.DateTimeFormat(locale, { year: 'numeric', timeZone: timezone }).format(dt);
+    let time = new Intl.DateTimeFormat(locale, { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: timezone }).format(dt);
+    time = time.replace(/\sAM$/i, 'AM').replace(/\sPM$/i, 'PM');
+    const zone = new Intl.DateTimeFormat(locale, { timeZone: timezone, timeZoneName: 'short' }).formatToParts(dt).find(p => p.type === 'timeZoneName');
+    const zoneStr = zone ? zone.value : 'ET';
+    return `${weekday} ${month} ${day} ${year} ${time} ${zoneStr}`;
+  }
+
   // ── MEETINGS ────────────────────────────────────────────────────────
 // ── MEETINGS ────────────────────────────────────────────────────────
 async function loadMeetings() {
@@ -912,35 +971,29 @@ async function loadMeetings() {
     }
 
     el.innerHTML = data.meetings.map(m => {
-      // 1. Fix the Date Parsing Shift
-      let dateStr = String(m.date || '').trim();
-      let month = "N/A", day = "--";
+      const rawDate = String(m.date || '').trim();
+      const rawTime = String(m.time || '').trim();
+      const dt = parseMeetingDateTime(rawDate, rawTime);
 
-      if (dateStr.includes('T') && dateStr.includes('Z')) {
-        // Google Sheets ISO timestamp: bind strictly to Eastern Time
-        const d = new Date(dateStr);
-        month = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'America/New_York' }).format(d);
-        day = new Intl.DateTimeFormat('en-US', { day: 'numeric', timeZone: 'America/New_York' }).format(d);
-      } else {
-        // Plain text date like "March 30, 2026" or "03/26/2026"
-        const d = new Date(dateStr);
-        if (!isNaN(d.getTime())) {
-          month = MONTHS[d.getMonth()];
-          day = d.getDate();
+      let month = "N/A";
+      let day = "--";
+      let meetingDateTimeLabel = "";
+
+      if (dt) {
+        month = new Intl.DateTimeFormat('en-US', { month: 'short', timeZone: 'America/New_York' }).format(dt);
+        day = new Intl.DateTimeFormat('en-US', { day: 'numeric', timeZone: 'America/New_York' }).format(dt);
+        meetingDateTimeLabel = formatMeetingDateTime(dt);
+      } else if (rawDate) {
+        const fallbackDate = new Date(normalizeDateText(rawDate));
+        if (!isNaN(fallbackDate.getTime())) {
+          month = MONTHS[fallbackDate.getMonth()];
+          day = fallbackDate.getDate();
+          meetingDateTimeLabel = `${rawDate}${rawTime ? ' ' + rawTime : ''}`;
         }
       }
 
-      // 2. Fix the Time Formatting & Append ET
-      let timeStr = String(m.time || '').trim();
-      
-      if (timeStr.includes('T') && timeStr.includes('Z')) {
-         const tDate = new Date(timeStr);
-         timeStr = tDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' });
-      }
-
-      // Strip any manual timezone you might have typed and force "ET"
-      timeStr = timeStr.replace(/\s*(EST|EDT|ET)\s*$/i, '').trim();
-      if (timeStr) timeStr += " ET";
+      const displayDateTime = meetingDateTimeLabel || `${rawDate}${rawTime ? ' ' + rawTime : ''}`;
+      const safeDateTime = escHtml(displayDateTime);
 
       const isOpen = (m.access || '').toLowerCase() !== 'members';
       
@@ -952,7 +1005,7 @@ async function loadMeetings() {
           </div>
           <div class="meeting-info">
             <h4>${escHtml(m.title)}</h4>
-            <p>${escHtml(m.location)} · ${escHtml(timeStr)}</p>
+            <p>${escHtml(m.location)} · ${safeDateTime}</p>
             <span class="meeting-badge ${isOpen ? 'open' : 'members'}">${isOpen ? 'Open to All Students' : 'Members Only'}</span>
           </div>
         </div>`;
