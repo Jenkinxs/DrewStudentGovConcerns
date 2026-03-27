@@ -634,7 +634,7 @@
   <div class="stat-item"><div class="stat-num">1,600+</div><div class="stat-label">Students Represented</div></div>
   <div class="stat-item"><div class="stat-num">24</div><div class="stat-label">Elected Officials</div></div>
   <div class="stat-item"><div class="stat-num" id="initiativeCount">—</div><div class="stat-label">Active Initiatives</div></div>
-  <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Annual Budget</div></div>
+  <div class="stat-item"><div class="stat-num">$00K</div><div class="stat-label">Annual Budget</div></div>
   <div class="stat-item"><div class="stat-num">1930s</div><div class="stat-label">Established</div></div>
 </div>
 
@@ -750,64 +750,15 @@
 
   <!-- OFFICERS (static — edit directly in HTML) -->
   <div id="officers"><div class="section-label">Executive Board 2025–26</div></div>
-  <div class="officers-grid">
-    <div class="officer-card">
-      <div class="officer-avatar">EG</div>
-      <div class="officer-name">Edgar Guzman</div>
-      <div class="officer-title">President</div>
-      <div class="officer-email">eguzman@drew.edu</div>
-    </div>
-    
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #2a5e47 0%, #3b8e66 100%);">KK</div>
-      <div class="officer-name">Kayla Kiernan</div>
-      <div class="officer-title">Vice President</div>
-      <div class="officer-email">kkiernan1@drew.edu</div>
-    </div>
-    
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #235c9e 0%, #2843da 100%);">GS</div>
-      <div class="officer-name">Gabe Spivak</div>
-      <div class="officer-title">President Pro Tempore</div>
-      <div class="officer-email">gspivak@drew.edu</div>
-    </div>
+<div class="officers-grid" id="officersGrid"></div>
 
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #db63d5 0%, #7e2d8f 100%);">EL</div>
-      <div class="officer-name">Evelyn Labbe</div>
-      <div class="officer-title">Chief of Staf</div>
-      <div class="officer-email">elabbe@drew.edu</div>
-    </div>
-
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #942929 0%, #832062 100%);">BA</div>
-      <div class="officer-name">Brody Allyn</div>
-      <div class="officer-title">Chief Financial Officer</div>
-      <div class="officer-email">ballyn@drew.edu</div>
-    </div>
-
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #d1ba3a 0%, #855c06 100%);">JC</div>
-      <div class="officer-name">Jordyn Casanova-Ghosh</div>
-      <div class="officer-title">Chief Communications Officer</div>
-      <div class="officer-email">acasanovaghosh@drew.edu</div>
-    </div>
-
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #1b3d5f 0%, #2e6e9f 100%);">SL</div>
-      <div class="officer-name">Ann Marie De Jesus</div>
-      <div class="officer-title">Attorney General</div>
-      <div class="officer-email">adejesus1@drew.edu</div>
-    </div>
-
-    <div class="officer-card">
-      <div class="officer-avatar" style="background: linear-gradient(135deg, #5a3d1b 0%, #8a6e2a 100%);">JW</div>
-      <div class="officer-name">Joseph Hernandez</div>
-      <div class="officer-title">Clerk</div>
-      <div class="officer-email">jhernandez4@drew.edu</div>
-    </div>
+<div id="senators" style="margin-top: 4rem;">
+  <div class="section-label">Student Senators 2025–2026</div>
+</div>
+<div class="officers-grid" id="senatorsGrid">
   </div>
 
+  
   <!-- INITIATIVES (dynamic) -->
   <div id="initiatives"><div class="section-label">Current Initiatives</div></div>
   <div class="initiatives-grid" id="initiativesGrid">
@@ -1153,18 +1104,19 @@ async function loadMeetings() {
       document.getElementById('initiativesGrid').innerHTML = errorMsg;
       return;
     }
+    
+    loadOfficers();
+    loadSenators();
 
-    try {
-      // One request to rule them all
-      const response = await fetch(`${SHEET_URL}?action=getAll`);
-      const data = await response.json();
-
-      // Distribute the data to the rendering functions
-      renderAnnouncements(data.announcements);
-      renderMeetings(data.meetings);
-      renderInitiatives(data.initiatives);
-      
-    } catch (e) {
+    // Existing data fetching
+  try {
+    const response = await fetch(`${SHEET_URL}?action=getAll`);
+    const data = await response.json();
+    renderAnnouncements(data.announcements);
+    renderMeetings(data.meetings);
+    renderInitiatives(data.initiatives);
+    
+  } catch (e) {
       console.error("SGA Dashboard Load Error:", e);
       const errorHtml = (msg) => `<div class="error-state" style="grid-column: 1/-1;">${msg}</div>`;
       document.getElementById('announcementsGrid').innerHTML = errorHtml("Could not load dashboard data.");
@@ -1172,7 +1124,80 @@ async function loadMeetings() {
   });
 
   // ── RENDERING FUNCTIONS (Logic moved from load functions) ──────────────
+// Utility to get initials for the avatar (e.g., "Edgar Guzman" -> "EG")
+function getInitials(name) {
+  if (!name) return "?";
+  return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+}
 
+// Function to fetch and parse the CSV
+async function loadOfficers() {
+  const el = document.getElementById('officersGrid');
+  try {
+    const response = await fetch('officers.csv');
+    if (!response.ok) throw new Error("CSV file not found");
+    
+    const csvText = await response.text();
+    // Split by lines and remove empty rows
+    const rows = csvText.split('\n').filter(row => row.trim() !== '');
+    
+    // Skip header (row 0) and map data
+    const officers = rows.slice(1).map(row => {
+      const [name, title, email] = row.split(',').map(field => field.trim());
+      return { name, title, email };
+    });
+
+    renderOfficers(officers);
+  } catch (e) {
+    console.error("Error loading officers:", e);
+    el.innerHTML = `<div class="error-state">Could not load officers from CSV.</div>`;
+  }
+}
+
+// Function to inject the HTML into the page
+function renderOfficers(officers) {
+  const el = document.getElementById('officersGrid');
+  el.innerHTML = officers.map(o => `
+    <div class="officer-card">
+      <div class="officer-avatar">${getInitials(o.name)}</div>
+      <div class="officer-name">${escHtml(o.name)}</div>
+      <div class="officer-title">${escHtml(o.title)}</div>
+      <div class="officer-email">${escHtml(o.email)}</div>
+    </div>
+  `).join('');
+}
+async function loadSenators() {
+  const el = document.getElementById('senatorsGrid');
+  try {
+    const response = await fetch('senators.csv');
+    if (!response.ok) throw new Error("senators.csv not found");
+    
+    const csvText = await response.text();
+    const rows = csvText.split('\n').filter(row => row.trim() !== '');
+    
+    const senators = rows.slice(1).map(row => {
+      const [name, title, email] = row.split(',').map(field => field.trim());
+      return { name, title, email };
+    });
+
+    renderSenators(senators);
+  } catch (e) {
+    console.error("Error loading senators:", e);
+    el.innerHTML = `<div class="error-state">Could not load senators from CSV.</div>`;
+  }
+}
+
+function renderSenators(senators) {
+  const el = document.getElementById('senatorsGrid');
+  el.innerHTML = senators.map(s => `
+    <div class="officer-card">
+      <div class="officer-avatar">${getInitials(s.name)}</div>
+      <div class="officer-name">${escHtml(s.name)}</div>
+      <div class="officer-title">${escHtml(s.title)}</div>
+      <div class="officer-email">${escHtml(s.email)}</div>
+    </div>
+  `).join('');
+}
   function renderAnnouncements(list) {
     const grid = document.getElementById('announcementsGrid');
     const items = list.slice(0, 3);
