@@ -590,7 +590,7 @@
      This single URL handles suggestions, meetings, AND initiatives.
 ──────────────────────────────────────────────────────── -->
 <script>
-  const SHEET_URL = "https://script.google.com/macros/s/AKfycbxERk-fHN4Kw38UOGeQWNLMdmjdTl36ct2iWmBGdfvSc6Vh1VXpHYLwJz7LVisMaSvo/exec";
+  const SHEET_URL = "https://script.google.com/macros/s/AKfycbwPbmQ9-NSVwz1DeEVPrOBqy3olIWzyX_ooTQf_QZ6emGsNnCvMT8uwpNGCZiVqYl-0/exec";
 </script>
 
 <!-- TOP BAR -->
@@ -641,42 +641,38 @@
 <!-- MAIN -->
 <main class="page">
 
-  <!-- ANNOUNCEMENTS (static — edit directly in HTML) -->
+  <!-- ANNOUNCEMENTS (dynamic — edit via Announcements tab in Google Sheet) -->
   <div id="announcements">
     <div class="section-label">Latest Announcements</div>
   </div>
-  <div class="announcements-grid">
-    <div class="announcement-card featured">
-      <div class="announcement-img">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-      </div>
-      <div class="announcement-content">
-        <div class="ann-meta">
-          <span class="ann-tag new">New</span>
-          <span class="ann-tag">Spring 2025</span>
-          <span class="ann-date">March 20, 2025</span>
-        </div>
-        <h3>SGA Spring General Elections — Nominations Now Open</h3>
-        <p>Nominations are officially open for all SGA positions for the 2025–2026 academic year. Any Drew student in good academic standing is eligible to run. Nomination forms are available in the Student Affairs office and on the Drew portal.</p>
-        <a href="#" class="ann-link">Learn more & nominate <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+  <div class="announcements-grid" id="announcementsGrid">
+    <!-- Skeleton loaders -->
+    <div class="announcement-card featured" style="min-height:180px;">
+      <div class="announcement-img" style="width:300px;"></div>
+      <div class="announcement-content" style="gap:0.75rem;">
+        <div style="display:flex;gap:0.5rem;"><div class="skeleton" style="width:50px;height:18px;border-radius:4px;"></div><div class="skeleton" style="width:80px;height:18px;border-radius:4px;"></div></div>
+        <div class="skeleton" style="width:85%;height:22px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:100%;height:13px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:90%;height:13px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:70%;height:13px;border-radius:4px;"></div>
       </div>
     </div>
-    <div class="announcement-card">
-      <div class="announcement-img"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <div class="announcement-content">
-        <div class="ann-meta"><span class="ann-tag">Budget</span><span class="ann-date">March 15, 2025</span></div>
-        <h3>Club Funding Deadline — April 1st</h3>
-        <p>All registered student organizations must submit their annual budget requests by April 1. Late submissions will not be considered for the fall allocation cycle.</p>
-        <a href="#" class="ann-link">Budget request form <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    <div class="announcement-card" style="min-height:160px;">
+      <div class="announcement-img" style="height:100px;"></div>
+      <div class="announcement-content" style="gap:0.6rem;">
+        <div class="skeleton" style="width:55%;height:16px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:80%;height:18px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:100%;height:12px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:75%;height:12px;border-radius:4px;"></div>
       </div>
     </div>
-    <div class="announcement-card">
-      <div class="announcement-img" style="background: linear-gradient(135deg, #2a6e47 0%, var(--accent) 100%);"><svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
-      <div class="announcement-content">
-        <div class="ann-meta"><span class="ann-tag urgent">Action Needed</span><span class="ann-date">March 10, 2025</span></div>
-        <h3>Campus Climate Survey — Make Your Voice Heard</h3>
-        <p>The annual campus climate survey closes March 31. Your responses directly inform SGA priorities and university policy decisions for next year.</p>
-        <a href="#" class="ann-link">Take the survey <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+    <div class="announcement-card" style="min-height:160px;">
+      <div class="announcement-img" style="height:100px;"></div>
+      <div class="announcement-content" style="gap:0.6rem;">
+        <div class="skeleton" style="width:55%;height:16px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:80%;height:18px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:100%;height:12px;border-radius:4px;"></div>
+        <div class="skeleton" style="width:75%;height:12px;border-radius:4px;"></div>
       </div>
     </div>
   </div>
@@ -753,7 +749,7 @@
   </div>
 
   <!-- OFFICERS (static — edit directly in HTML) -->
-  <div id="officers"><div class="section-label">Executive Board 2024–25</div></div>
+  <div id="officers"><div class="section-label">Executive Board 2025–26</div></div>
   <div class="officers-grid">
     <div class="officer-card">
       <div class="officer-avatar">EG</div>
@@ -989,14 +985,76 @@
       .replace(/"/g, '&quot;');
   }
 
+  // ── ANNOUNCEMENTS ───────────────────────────────────────────────────
+  const ANN_ICONS = [
+    `<svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>`,
+    `<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    `<svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  ];
+
+  const ANN_BG = [
+    'linear-gradient(135deg, var(--forest) 0%, var(--accent) 100%)',
+    'linear-gradient(135deg, var(--forest) 0%, var(--accent) 100%)',
+    'linear-gradient(135deg, #2a6e47 0%, var(--accent) 100%)',
+  ];
+
+  async function loadAnnouncements() {
+    const grid = document.getElementById('announcementsGrid');
+    try {
+      const res = await fetch(`${SHEET_URL}?action=getAnnouncements`);
+      const data = await res.json();
+      const list = (data.announcements || []).slice(0, 3);
+
+      if (!list.length) {
+        grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          <p>No announcements at this time.</p>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map((a, i) => {
+        const isFeatured = i === 0;
+        const tagClass = (a.tag || 'general').toLowerCase() === 'new' ? 'new'
+                       : (a.tag || '').toLowerCase() === 'urgent' ? 'urgent' : '';
+        const dateStr = a.date ? new Date(a.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+        const linkHtml = a.link
+          ? `<a href="${escHtml(a.link)}" class="ann-link" target="_blank">Read more <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>`
+          : '';
+
+        return `
+          <div class="announcement-card${isFeatured ? ' featured' : ''}">
+            <div class="announcement-img" style="background:${ANN_BG[i % ANN_BG.length]}">
+              ${ANN_ICONS[i % ANN_ICONS.length]}
+            </div>
+            <div class="announcement-content">
+              <div class="ann-meta">
+                ${a.tag ? `<span class="ann-tag ${tagClass}">${escHtml(a.tag)}</span>` : ''}
+                ${dateStr ? `<span class="ann-date">${dateStr}</span>` : ''}
+              </div>
+              <h3>${escHtml(a.title)}</h3>
+              <p>${escHtml(a.body)}</p>
+              ${linkHtml}
+            </div>
+          </div>`;
+      }).join('');
+    } catch (e) {
+      grid.innerHTML = `<div class="error-state" style="grid-column:1/-1;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Could not load announcements. Please check back later.
+      </div>`;
+    }
+  }
+
   // ── INIT ─────────────────────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
     if (SHEET_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      // No URL configured — show placeholder content
+      document.getElementById('announcementsGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live announcements.</div>`;
       document.getElementById('meetingsList').innerHTML = `<div class="error-state">Connect your Google Sheet to see live meetings.</div>`;
       document.getElementById('initiativesGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live initiatives.</div>`;
       return;
     }
+    loadAnnouncements();
     loadMeetings();
     loadInitiatives();
   });
