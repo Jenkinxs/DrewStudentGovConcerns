@@ -1048,7 +1048,7 @@
 
   // ── INIT ─────────────────────────────────────────────────────────────
   window.addEventListener('DOMContentLoaded', () => {
-    if (SHEET_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') {
+    if (SHEET_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE') { //this line is to display an incorrect URL error message if the sheet isn't set up
       document.getElementById('announcementsGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live announcements.</div>`;
       document.getElementById('meetingsList').innerHTML = `<div class="error-state">Connect your Google Sheet to see live meetings.</div>`;
       document.getElementById('initiativesGrid').innerHTML = `<div class="error-state" style="grid-column:1/-1">Connect your Google Sheet to see live initiatives.</div>`;
