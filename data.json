@@ -1,40 +1,13 @@
 {
   "meetings": [
     {
-      "id": "m1",
-      "title": "General Body Meeting",
-      "date": "2025-04-10",
-      "time": "6:00 PM",
-      "location": "Brothers College Room 102",
-      "access": "open"
+      "title": "Test",
+      "date": "2026-04-02",
+      "time": "6:00PM",
+      "location": "EC105",
+      "id": "m1775085647274"
     }
   ],
-  "announcements": [
-    {
-      "id": "a1",
-      "title": "Welcome Back!",
-      "date": "2025-04-01",
-      "body": "Welcome to the new semester. Stay tuned for upcoming events and meetings.",
-      "tag": "New",
-      "link": ""
-    }
-  ],
-  "events": [
-    {
-      "id": "e1",
-      "title": "Spring Mixer",
-      "date": "2025-04-20",
-      "time": "7:00 PM",
-      "location": "Simon Forum",
-      "description": "Join us for the annual spring mixer with food, music, and fun!"
-    }
-  ],
-  "initiatives": [
-    {
-      "id": "i1",
-      "title": "Campus Sustainability",
-      "description": "Working with facilities to expand recycling and reduce campus waste.",
-      "status": "In Progress"
-    }
-  ]
+  "announcements": [],
+  "events": []
 }
