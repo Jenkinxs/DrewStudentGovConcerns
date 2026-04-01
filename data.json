@@ -1,13 +1,40 @@
 {
   "meetings": [
     {
-      "title": "This is a meeting via Github!",
-      "date": "2026-04-02",
-      "time": "10:00AM",
-      "location": "EC145",
-      "id": "m1775010988383"
+      "id": "m1",
+      "title": "General Body Meeting",
+      "date": "2025-04-10",
+      "time": "6:00 PM",
+      "location": "Brothers College Room 102",
+      "access": "open"
     }
   ],
-  "announcements": [],
-  "events": []
+  "announcements": [
+    {
+      "id": "a1",
+      "title": "Welcome Back!",
+      "date": "2025-04-01",
+      "body": "Welcome to the new semester. Stay tuned for upcoming events and meetings.",
+      "tag": "New",
+      "link": ""
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "title": "Spring Mixer",
+      "date": "2025-04-20",
+      "time": "7:00 PM",
+      "location": "Simon Forum",
+      "description": "Join us for the annual spring mixer with food, music, and fun!"
+    }
+  ],
+  "initiatives": [
+    {
+      "id": "i1",
+      "title": "Campus Sustainability",
+      "description": "Working with facilities to expand recycling and reduce campus waste.",
+      "status": "In Progress"
+    }
+  ]
 }
