@@ -778,7 +778,39 @@
     renderAll();
     toast('Deleted.', 'info');
   }
+// --Inactivity -----------------------------------------------
+  let timeoutId;
+    const inactivityDuration = 1200000; // 120 seconds in milliseconds
 
+    function handleInactiveUser() {
+        // This is the function that runs when the user is inactive
+        alert("You have been inactive for 2 minutes. You are being logged out.");
+        logout();
+        // You can add your actual logout logic here, e.g.:
+        // window.location.href = '/logout';
+    }
+
+    function resetTimer() {
+        // Clear the previous timer
+        clearTimeout(timeoutId);
+        
+        // Set a new timer
+        timeoutId = setTimeout(handleInactiveUser, inactivityDuration);
+    }
+
+    // List of events that indicate user activity
+    const activityEvents = [
+        'mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart', 'click'
+    ];
+
+    // Add event listeners to the document
+    activityEvents.forEach(event => {
+        document.addEventListener(event, resetTimer, true); // Use `true` for the capturing phase
+    });
+
+    // Initialize the timer on page load
+    window.onload = resetTimer;
+  
   // ── Publish to GitHub ─────────────────────────────────────────────────
   async function publishData() {
     const cfg = getConfig();
