@@ -533,11 +533,10 @@ async function getData() {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
-    
-    document.getElementById("display-element").innerText = data.value;
+    return data.value; // ✅ return it
   } catch (error) {
     console.error("Error fetching data:", error);
+    return null;
   }
 }
 
@@ -558,16 +557,19 @@ getData();
 
   
   async function attemptLogin() {
-    getData();
-    const pw = document.getElementById('pw-input').value;
-    if (hash === data) {
-      sessionStorage.setItem('sga_auth', '1');
-      let loggedIn = true;
-      showApp();
-    } else {
-      document.getElementById('login-error').style.display = 'block';
-    }
+  const hashVal = await getData();
+
+  const pw = document.getElementById('pw-input').value;
+  const hash = await sha256(pw);  
+
+  if (hash === hashVal) {
+    sessionStorage.setItem('sga_auth', '1');
+    let loggedIn = true;
+    showApp();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
   }
+}
 
   
 
