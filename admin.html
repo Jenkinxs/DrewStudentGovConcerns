@@ -527,7 +527,21 @@
 
 <script>
   // ── Config ──────────────────────────────────────────────────────────
-  const HASHED_PASSWORD = "201c9ae3b19d2f1e50f70ce61ca2d1641a057c68c2ba24cac27372a6c8bd4729"; // Replace with your SHA-256 hash
+const url = "https://script.google.com/macros/s/AKfycbz1qsGDei9SBOO654Oz4ySzkhRV3lzseIt2qtfz3_50mfCHODeoPve9rr2Go8yvN296FQ/exec;
+
+async function getData() {
+  try {
+    const response = await fetch(url);
+    const inData = await response.json();
+    
+    
+    document.getElementById("display-element").innerText = data.value;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+
+getData();
 
   // ── State ────────────────────────────────────────────────────────────
   let data = { meetings: [], announcements: [], events: [] };
@@ -541,10 +555,12 @@
   }
 
   // ── Login ─────────────────────────────────────────────────────────────
+
+  
   async function attemptLogin() {
+    getData();
     const pw = document.getElementById('pw-input').value;
-    const hash = await sha256(pw);
-    if (hash === HASHED_PASSWORD) {
+    if (hash === inData) {
       sessionStorage.setItem('sga_auth', '1');
       let loggedIn = true;
       showApp();
@@ -552,6 +568,8 @@
       document.getElementById('login-error').style.display = 'block';
     }
   }
+
+  
 
   document.getElementById('pw-input').addEventListener('keydown', e => {
     if (e.key === 'Enter') attemptLogin();
