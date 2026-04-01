@@ -532,7 +532,7 @@ const url = "https://script.google.com/macros/s/AKfycbz1qsGDei9SBOO654Oz4ySzkhRV
 async function getData() {
   try {
     const response = await fetch(url);
-    const inData = await response.json();
+    const data = await response.json();
     
     
     document.getElementById("display-element").innerText = data.value;
@@ -560,7 +560,7 @@ getData();
   async function attemptLogin() {
     getData();
     const pw = document.getElementById('pw-input').value;
-    if (hash === inData) {
+    if (hash === data) {
       sessionStorage.setItem('sga_auth', '1');
       let loggedIn = true;
       showApp();
