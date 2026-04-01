@@ -784,10 +784,10 @@
 
     function handleInactiveUser() {
         // This is the function that runs when the user is inactive
-        if (sessionStorage.getItem('sga-auth') !== null) {
+        
         alert("You have been inactive for 2 minutes. You are being logged out.");
         logout();
-        }
+        
         
     }
 
@@ -796,7 +796,9 @@
         clearTimeout(timeoutId);
         
         // Set a new timer
+        if (sessionStorage.getItem('sga-auth') == '1') {
         timeoutId = setTimeout(handleInactiveUser, inactivityDuration);
+        }
     }
 
     // List of events that indicate user activity
