@@ -780,14 +780,15 @@
   }
 // --Inactivity -----------------------------------------------
   let timeoutId;
-    const inactivityDuration = 120000; // 120 seconds in milliseconds
+    const inactivityDuration = 10000; // 120 seconds in milliseconds
 
     function handleInactiveUser() {
         // This is the function that runs when the user is inactive
+        if (sessionStorage.getItem('sga-auth') !== null) {
         alert("You have been inactive for 2 minutes. You are being logged out.");
         logout();
-        // You can add your actual logout logic here, e.g.:
-        // window.location.href = '/logout';
+        }
+        
     }
 
     function resetTimer() {
