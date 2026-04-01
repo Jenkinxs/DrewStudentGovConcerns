@@ -1,0 +1,29 @@
+{
+  "meetings": [
+    {
+      "id": "m1",
+      "title": "General Body Meeting",
+      "date": "2025-04-10",
+      "time": "6:00 PM",
+      "location": "Brothers College Room 102"
+    }
+  ],
+  "announcements": [
+    {
+      "id": "a1",
+      "title": "Welcome Back!",
+      "date": "2025-04-01",
+      "body": "Welcome to the new semester. Stay tuned for upcoming events and meetings."
+    }
+  ],
+  "events": [
+    {
+      "id": "e1",
+      "title": "Spring Mixer",
+      "date": "2025-04-20",
+      "time": "7:00 PM",
+      "location": "Simon Forum",
+      "description": "Join us for the annual spring mixer with food, music, and fun!"
+    }
+  ]
+}
