@@ -546,6 +546,7 @@
     const hash = await sha256(pw);
     if (hash === HASHED_PASSWORD) {
       sessionStorage.setItem('sga_auth', '1');
+      let loggedIn = true;
       showApp();
     } else {
       document.getElementById('login-error').style.display = 'block';
@@ -558,6 +559,7 @@
 
   function logout() {
     sessionStorage.removeItem('sga_auth');
+    loggedIn = false;
     location.reload();
   }
 
@@ -796,7 +798,7 @@
         clearTimeout(timeoutId);
         
         // Set a new timer
-        if (sessionStorage.getItem('sga-auth') == '1') {
+        while (loggedIn == true) {
         timeoutId = setTimeout(handleInactiveUser, inactivityDuration);
         }
     }
