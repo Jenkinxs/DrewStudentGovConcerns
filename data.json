@@ -16,5 +16,14 @@
       "id": "a1775088350148"
     }
   ],
-  "events": []
+  "events": [
+    {
+      "title": "This is an event!",
+      "date": "2026-04-17",
+      "time": "8:00 PM",
+      "location": "EC1",
+      "description": "A description for the event!",
+      "id": "e1775088781158"
+    }
+  ]
 }
