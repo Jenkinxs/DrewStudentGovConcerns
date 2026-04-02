@@ -8,6 +8,13 @@
       "id": "m1775085647274"
     }
   ],
-  "announcements": [],
+  "announcements": [
+    {
+      "title": "This is an announcement",
+      "date": "2026-04-07",
+      "body": "This is the description!",
+      "id": "a1775088350148"
+    }
+  ],
   "events": []
 }
