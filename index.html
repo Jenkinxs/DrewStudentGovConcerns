@@ -608,7 +608,7 @@
   <script>
  // const response = await fetch("https://sgovsite.t-ra-jenkins3.workers.dev/");
   //const API_KEY = await response.json();
- const SPREADSHEET_ID = "1PyyXIdgFmi2xqbdTJMMIB1trR7ZysPegYM4at2mCTro";
+ //const SPREADSHEET_ID = "1PyyXIdgFmi2xqbdTJMMIB1trR7ZysPegYM4at2mCTro";
   </script>
 
 <!-- TOP BAR -->
@@ -826,7 +826,7 @@
   document.getElementById('yr').textContent = new Date().getFullYear();
 
   // ── VALIDATION ───────────────────────────────────────────────────────
-  if (SPREADSHEET_ID === 'YOUR_SPREADSHEET_ID_HERE' || API_KEY === 'YOUR_API_KEY_HERE') {
+  if (SPREADSHEET_ID === 'YOUR_SPREADSHEET_ID_HERE' || API_KEY === '0') {
     const warn = `<div class="error-state" style="grid-column:1/-1">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       Set SPREADSHEET_ID and API_KEY at the top of this file to load live data.
