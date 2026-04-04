@@ -173,25 +173,28 @@
 }
     
     .hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+  content: '';
+  position: absolute;
+  inset: 0;
 
-    background:
-        rgba(255, 0, 0, 0.6), /* ← dark overlay */
-        radial-gradient(ellipse at 75% -10%, rgba(201,168,76,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 10% 110%, rgba(59,110,86,0.3) 0%, transparent 50%),
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background:
+    radial-gradient(ellipse at 75% -10%, rgba(201,168,76,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse at 10% 110%, rgba(59, 110, 86, 0.13) 0%, transparent 50%),
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px),
+    rgba(0, 0, 0, 0.041);
 
-    background-size: 40px 40px;
-    pointer-events: none;
-    }
+  background-size:
+    cover,   /* radial 1 */
+    cover,   /* radial 2 */
+    40px 40px, /* grid vertical */
+    40px 40px, /* grid horizontal */
+    cover;   /* tint */
 
-    .background-tint {
-    background-color: rgb(119, 60, 0);
-    background-blend-mode: multiply;
-    }
+  pointer-events: none;
+}
+
+    
 
     .hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
 
