@@ -841,8 +841,8 @@
   // Fetches a named sheet tab and returns an array of objects keyed by the
   // first-row headers (case-insensitive, trimmed).
   async function fetchSheet(tabName) {
-    const range = encodeURIComponent(`${tabName}!A:Z`);
-    const url = `https://sgovsite.t-ra-jenkins3.workers.dev/?range=${range}`;
+    const range = `${tabName}!A:Z`;
+    const url = `https://sgovsite.t-ra-jenkins3.workers.dev/?range=${encodeURIComponent(range)}`;
     const res = await fetch(url);
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -1096,6 +1096,7 @@
         errorHtml('Could not load senators: ' + senators.reason?.message);
     }
   }
+  init();
 </script>
 
 </body>
