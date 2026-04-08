@@ -655,10 +655,10 @@
           <h2>New Suggestion / Concern Form</h2>
           <p>Fields marked with <span style="color:var(--gold)">*</span> are required</p>
         </div>
-        <div class="ticket-id-badge">
+        <!-- <div class="ticket-id-badge">
           <div class="tid-label">Ticket ID</div>
           <div class="tid-value" id="ticketIdDisplay">—</div>
-        </div>
+        </div> -->
       </div>
 
       <div class="card-body">
@@ -892,10 +892,6 @@
     document.getElementById('yr').textContent = new Date().getFullYear();
     if (!DEMO_MODE) {
       document.getElementById('configBanner').style.display = 'none';
-      document.getElementById('sheetStatus').textContent = '';
-      document.getElementById('sheetStatus').style.background = 'rgba(42,110,71,0.25)';
-      document.getElementById('sheetStatus').style.borderColor = 'rgba(42,110,71,0.5)';
-      document.getElementById('sheetStatus').style.color = '#90daa8';
     }
     fetchNextId();
   });
