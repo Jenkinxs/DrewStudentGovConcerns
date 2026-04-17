@@ -91,6 +91,18 @@
     }
     .nav-cta:hover { opacity: 0.88; background: var(--gold) !important; }
 
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+    .hamburger:hover { background: rgba(255,255,255,0.1); }
+
     /* ── HERO ── */
     .hero {
       background-image: url('mead.JPG');
@@ -575,7 +587,29 @@
 
     @media (max-width: 640px) {
       .topbar-sub, .topbar-divider { display: none; }
-      nav a:not(.nav-cta) { display: none; }
+      nav { display: none; }
+      .hamburger { display: block; }
+      nav.nav-open {
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--forest);
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      nav.nav-open a {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0;
+      }
+    }
       .announcements-grid { grid-template-columns: 1fr; }
       .announcement-card.featured { flex-direction: column; }
       .announcement-card.featured .announcement-img { width: 100%; min-height: 160px; }
@@ -587,7 +621,7 @@
       .footer-inner { grid-template-columns: 1fr; }
       .hero { padding: 3.5rem 1.25rem 3rem; }
       .page { padding: 2rem 1rem 3rem; }
-    }
+    
   </style>
 </head>
 <body>
@@ -620,7 +654,14 @@
   <a href="/" class="topbar-logo">Drew <span>SGA</span></a>
   <div class="topbar-divider"></div>
   <div class="topbar-sub">Student Government Association</div>
-  <nav>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+  <nav id="nav-menu">
     <a href="/history">History</a>
     <a href="/members">Members</a>
     <a href="#initiatives">Initiatives    </a>
@@ -1106,6 +1147,27 @@
     }
   }
   init();
+
+  // Hamburger menu toggle
+  document.getElementById('hamburger').addEventListener('click', function() {
+    document.getElementById('nav-menu').classList.toggle('nav-open');
+  });
+
+  // Close menu when clicking outside or on a link
+  document.addEventListener('click', function(event) {
+    const nav = document.getElementById('nav-menu');
+    const hamburger = document.getElementById('hamburger');
+    if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+      nav.classList.remove('nav-open');
+    }
+  });
+
+  // Close menu when a link is clicked
+  document.querySelectorAll('#nav-menu a').forEach(link => {
+    link.addEventListener('click', function() {
+      document.getElementById('nav-menu').classList.remove('nav-open');
+    });
+  });
 </script>
 
 </body>
