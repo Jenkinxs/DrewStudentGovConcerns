@@ -224,73 +224,30 @@
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     /* ── OFFICERS ── */
-    .officers-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      margin-bottom: 3.5rem;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 2px 16px rgba(27,61,47,0.07);
-    }
+    .officers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 3.5rem; }
 
     .officer-card {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 1.1rem 1.75rem;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-      position: relative;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 1.5rem 1rem; text-align: center;
+      box-shadow: 0 2px 12px rgba(27,61,47,0.06);
+      transition: box-shadow 0.2s, transform 0.15s;
     }
-    .officer-card:last-child { border-bottom: none; }
-    .officer-card:hover { background: #f5f0e8; }
-
-    /* Gold accent bar on left */
-    .officer-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--gold);
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
-    .officer-card:hover::before { opacity: 1; }
+    .officer-card:hover { box-shadow: 0 6px 24px rgba(27,61,47,0.12); transform: translateY(-2px); }
 
     .officer-avatar {
-      width: 54px; height: 54px; border-radius: 50%;
+      width: 80px; height: 80px; border-radius: 50%;
       background: linear-gradient(135deg, var(--forest) 0%, var(--accent) 100%);
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; color: #fff;
-      border: 2px solid var(--gold-pale);
+      margin: 0 auto 1rem;
+      font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: #fff;
+      border: 3px solid var(--gold-pale);
       overflow: hidden;
     }
     .officer-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
-    .officer-info { flex: 1; min-width: 0; }
-    .officer-name {
-      font-family: 'Fraunces', serif; font-size: 1.02rem; font-weight: 500;
-      color: var(--forest); margin-bottom: 0.15rem;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-    }
-    .officer-title {
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.09em;
-      text-transform: uppercase; color: var(--muted);
-    }
-    .officer-email {
-      margin-left: auto;
-      font-size: 0.76rem; color: var(--accent); font-weight: 500;
-      white-space: nowrap; flex-shrink: 0;
-      border: 1px solid rgba(59,110,86,0.25);
-      padding: 0.3rem 0.75rem; border-radius: 20px;
-      background: rgba(59,110,86,0.05);
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .officer-email:hover { background: rgba(59,110,86,0.1); border-color: var(--accent); }
+    .officer-name { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 500; color: var(--forest); margin-bottom: 0.2rem; }
+    .officer-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+    .officer-email { font-size: 0.73rem; color: var(--accent); margin-top: 0.5rem; }
 
     /* ── SENATORS ROSTER ── */
     .senators-roster {
