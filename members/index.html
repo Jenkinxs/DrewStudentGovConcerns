@@ -678,58 +678,48 @@
   }
 
   // ── RENDER: OFFICERS (horizontal profile rows) ───────────────────────
-  function renderOfficers(rows, gridId) {
-    const el = document.getElementById(gridId);
-    if (!rows.length) {
-      el.innerHTML = `<div class="empty-state" style="padding:2rem 1.75rem;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        <p>No officers to display at this time.</p>
+function renderOfficers(rows, gridId) {
+  const el = document.getElementById(gridId);
+  if (!rows.length) { /* unchanged */ return; }
+  el.innerHTML = rows.map(p => {
+    const initials = getInitials(p.name);
+    const avatarInner = p.image_url
+      ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
+               onerror="this.parentElement.textContent='${escHtml(initials)}'">`
+      : escHtml(initials);
+    return `
+      <div class="officer-card" onclick='openMemberModal(${JSON.stringify(p)})' style="cursor:pointer;">
+        <div class="officer-avatar">${avatarInner}</div>
+        <div class="officer-info">
+          <div class="officer-name">${escHtml(p.name)}</div>
+          <div class="officer-title">${escHtml(p.title)}</div>
+        </div>
+        ${p.email ? `<a class="officer-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
       </div>`;
-      return;
-    }
-    el.innerHTML = rows.map(p => {
-      const initials = getInitials(p.name);
-      const avatarInner = p.image_url
-        ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}" onerror="this.parentElement.textContent='${escHtml(initials)}'">`
-        : escHtml(initials);
-      return `
-        <div class="officer-card">
-          <div class="officer-avatar">${avatarInner}</div>
-          <div class="officer-info">
-            <div class="officer-name">${escHtml(p.name)}</div>
-            <div class="officer-title">${escHtml(p.title)}</div>
-          </div>
-          ${p.email ? `<a class="officer-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
-        </div>`;
-    }).join('');
-  }
+  }).join('');
+}
 
-  // ── RENDER: SENATORS (roster cards) ─────────────────────────────
-  function renderSenators(rows, gridId) {
-    const el = document.getElementById(gridId);
-    if (!rows.length) {
-      el.innerHTML = `<div class="empty-state" style="padding:2rem 1.75rem;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-        <p>No senators to display at this time.</p>
+// ── RENDER: SENATORS (roster cards) ─────────────────────────────
+function renderSenators(rows, gridId) {
+  const el = document.getElementById(gridId);
+  if (!rows.length) { /* unchanged */ return; }
+  el.innerHTML = rows.map(p => {
+    const initials = getInitials(p.name);
+    const avatarInner = p.image_url
+      ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
+               onerror="this.parentElement.textContent='${escHtml(initials)}'">`
+      : escHtml(initials);
+    return `
+      <div class="senator-card" onclick='openMemberModal(${JSON.stringify(p)})' style="cursor:pointer;">
+        <div class="senator-avatar">${avatarInner}</div>
+        <div class="senator-details">
+          <div class="senator-name">${escHtml(p.name)}</div>
+          <div class="senator-title">${escHtml(p.title)}</div>
+        </div>
+        ${p.email ? `<a class="senator-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
       </div>`;
-      return;
-    }
-    el.innerHTML = rows.map(p => {
-      const initials = getInitials(p.name);
-      const avatarInner = p.image_url
-        ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}" onerror="this.parentElement.textContent='${escHtml(initials)}'">`
-        : escHtml(initials);
-      return `
-        <div class="senator-card">
-          <div class="senator-avatar">${avatarInner}</div>
-          <div class="senator-details">
-            <div class="senator-name">${escHtml(p.name)}</div>
-            <div class="senator-title">${escHtml(p.title)}</div>
-          </div>
-          ${p.email ? `<a class="senator-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
-        </div>`;
-    }).join('');
-  }
+  }).join('');
+}
 
   // ── INIT ─────────────────────────────────────────────────────────────
   async function init() {
