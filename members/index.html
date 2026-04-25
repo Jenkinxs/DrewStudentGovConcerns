@@ -7,56 +7,62 @@
   <title>Members — Drew SGA</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    /* ---- Expandable card container (used for officers & senators) ---- */
-  .expandable-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: box-shadow .2s;
-  }
-  .expandable-card:hover { box-shadow: 0 6px 24px rgba(27,61,47,.12); }
-
-  /* Header – visible always */
-  .expandable-header {
-    display: flex;
+    /* ── MODAL OVERLAY ── */
+  .member-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: none;               /* toggled by JS */
     align-items: center;
-    gap: 1.5rem;
-    padding: 1.25rem 1.5rem;
+    justify-content: center;
+    z-index: 200;
+    overflow-y: auto;
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+  }
+  .member-modal.show { display:flex; }
+
+  .member-card {
+    background: var(--surface);
+    border-radius: 12px;
+    max-width: 720px;
+    width: 100%;
+    overflow:hidden;
+    transform: scale(0.9);
+    opacity:0;
+    transition: transform .3s ease, opacity .3s ease;
+  }
+  .member-modal.show .member-card {
+    transform: scale(1);
+    opacity:1;
   }
 
-  /* Avatar (same style as before) */
-  .expandable-avatar {
+  .member-header{
+    display:flex;
+    align-items:center;
+    gap:1.5rem;
+    background:var(--gold-pale);
+    padding:1.5rem;
+  }
+  .member-pic{
     flex-shrink:0;
-    width:62px;height:62px;
+    width:120px;height:120px;
     border-radius:50%;
+    overflow:hidden;
     background:linear-gradient(135deg,var(--forest),var(--accent));
     display:flex;align-items:center;justify-content:center;
-    font-family:'Fraunces',serif;font-size:1rem;color:#fff;
-    overflow:hidden;
+    font-family:'Fraunces',serif;
+    font-size:2rem;color:#fff;
   }
-
-  /* Details beside avatar */
-  .expandable-info { flex:1; min-width:0; }
-  .expandable-name   { font-family:'Fraunces',serif;font-size:1.05rem;color:var(--forest); }
-  .expandable-title  { font-size:.86rem;color:var(--muted); }
-  .expandable-email  { font-size:.82rem;color:var(--accent); white-space:nowrap; }
-
-  /* Bio section – hidden by default, shown on .open */
-  .expandable-body {
-    max-height:0;
-    opacity:0;
-    overflow:hidden;
-    padding:0 1.5rem;
-    background:#fff;
-    color:var(--text);
-    transition: max-height .35s ease, opacity .35s ease .05s, padding .35s;
-  }
-  .expandable-card.open .expandable-body {
-    max-height:500px;               /* enough for typical bios */
-    opacity:1;
-    padding:1.5rem;
+  .member-pic img{width:100%;height:100%;object-fit:cover;}
+  .member-info{flex:1;}
+  .member-name{font-family:'Fraunces',serif;font-size:1.6rem;color:var(--forest);}
+  .member-title{font-size:.95rem;color:var(--muted);margin:.4rem 0;}
+  .member-email{font-size:.85rem;color:var(--accent);}
+  .member-body{padding:1.5rem;background:#fff;color:var(--text);}
+  .member-close{
+    background:none;border:none;color:#fff;font-size:1.5rem;
+    cursor:pointer;position:absolute;top:1rem;right:1rem;
   }
     :root {
       --forest:    #1b3d2f;
@@ -518,6 +524,20 @@
     }
   </style>
 </head>
+<div class="member-modal" id="memberModal" aria-hidden="true">
+  <button class="member-close" aria-label="Close modal" onclick="closeMemberModal()">✕</button>
+  <div class="member-card" id="memberCard">
+    <div class="member-header">
+      <div class="member-pic" id="modalPic"></div>
+      <div class="member-info">
+        <div class="member-name" id="modalName"></div>
+        <div class="member-title" id="modalTitle"></div>
+        <a class="member-email" id="modalEmail"></a>
+      </div>
+    </div>
+    <div class="member-body" id="modalBio"></div>
+  </div>
+</div>
 <body>
 
 <!-- TOP BAR -->
@@ -684,64 +704,98 @@
     }).join('');
   }
 
+  // ── RENDER: SENATORS (roster cards) ─────────────────────────────
   function renderSenators(rows, gridId) {
-  const container = document.getElementById(gridId);
-  if (!rows.length) { container.innerHTML = ''; return; }
-
-  container.innerHTML = rows.map(p => {
-    const initials = getInitials(p.name);
-    const avatar = p.image_url
-      ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
-          onerror="this.parentElement.textContent='${escHtml(initials)}'">`
-      : escHtml(initials);
-
-    const bioHtml = p.bio
-      ? `<p>${escHtml(p.bio).replace(/\n/g, '</p><p>')}</p>`
-      : '<p>No biography supplied.</p>';
-
-    return `
-      <div class="expandable-card" onclick="toggleCard(this, ${JSON.stringify(p)})">
-        <div class="expandable-header">
-          <div class="expandable-avatar">${avatar}</div>
-          <div class="expandable-info">
-            <div class="expandable-name">${escHtml(p.name)}</div>
-            <div class="expandable-title">${escHtml(p.title)}</div>
-          </div>
-          ${p.email ? `<a class="expandable-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
-        </div>
-        <div class="expandable-body">${bioHtml}</div>
+    const el = document.getElementById(gridId);
+    if (!rows.length) {
+      el.innerHTML = `<div class="empty-state" style="padding:2rem 1.75rem;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <p>No senators to display at this time.</p>
       </div>`;
-  }).join('');
-}
+      return;
+    }
+    el.innerHTML = rows.map(p => {
+      const initials = getInitials(p.name);
+      const avatarInner = p.image_url
+        ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}" onerror="this.parentElement.textContent='${escHtml(initials)}'">`
+        : escHtml(initials);
+      return `
+        <div class="senator-card">
+          <div class="senator-avatar">${avatarInner}</div>
+          <div class="senator-details">
+            <div class="senator-name">${escHtml(p.name)}</div>
+            <div class="senator-title">${escHtml(p.title)}</div>
+          </div>
+          ${p.email ? `<a class="senator-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
+        </div>`;
+    }).join('');
+  }
 
-/* ---------- CARD TOGGLE ---------- */
-function toggleCard(cardEl, member) {
-  // close any already‑open card (optional – makes only one open at a time)
-  document.querySelectorAll('.expandable-card.open').forEach(open => {
-    if (open !== cardEl) open.classList.remove('open');
-  });
+  // ── INIT ─────────────────────────────────────────────────────────────
+  async function init() {
+    const [officers, senators] = await Promise.allSettled([
+      fetchSheet('Officers'),
+      fetchSheet('Senators'),
+    ]);
 
-  // toggle the clicked one
-  cardEl.classList.toggle('open');
-}
+    if (officers.status === 'fulfilled') {
+      renderOfficers(officers.value, 'officersGrid');
+    } else {
+      document.getElementById('officersGrid').innerHTML =
+        errorHtml('Could not load officers: ' + officers.reason?.message);
+    }
 
-
-
-  /* ---------- INITIAL LOAD ---------- */
-async function init() {
-  const [officers, senators] = await Promise.allSettled([
-    fetchSheet('Officers'),
-    fetchSheet('Senators')
-  ]);
-
-  if (officers.status === 'fulfilled') renderOfficers(officers.value, 'officersGrid');
-  else document.getElementById('officersGrid').innerHTML = errorHtml('Officers load error');
-
-  if (senators.status === 'fulfilled') renderSenators(senators.value, 'senatorsGrid');
-  else document.getElementById('senatorsGrid').innerHTML = errorHtml('Senators load error');
+    if (senators.status === 'fulfilled') {
+      renderSenators(senators.value, 'senatorsGrid');
+    } else {
+      document.getElementById('senatorsGrid').innerHTML +=
+        errorHtml('Could not load senators: ' + senators.reason?.message);
+    }
   }
   init();
-  
+
+  // ---------- MODAL LOGIC ----------
+const modal = document.getElementById('memberModal');
+const modalPic = document.getElementById('modalPic');
+const modalName = document.getElementById('modalName');
+const modalTitle = document.getElementById('modalTitle');
+const modalEmail = document.getElementById('modalEmail');
+const modalBio = document.getElementById('modalBio');
+
+/**
+ * Show the modal with data from the clicked member.
+ * @param {Object} member – object with keys name,title,email,image_url,bio
+ */
+function openMemberModal(member) {
+  // picture / initials
+  if (member.image_url) {
+    modalPic.innerHTML = `<img src="${escHtml(member.image_url)}"
+                           alt="${escHtml(member.name)}"
+                           onerror="this.parentElement.textContent='${escHtml(getInitials(member.name))}'">`;
+  } else {
+    modalPic.textContent = getInitials(member.name);
+  }
+
+  modalName.textContent   = member.name   || '';
+  modalTitle.textContent  = member.title  || '';
+  modalEmail.textContent  = member.email  || '';
+  modalEmail.href          = member.email ? `mailto:${member.email}` : '#';
+  modalBio.innerHTML      = member.bio ? `<p>${escHtml(member.bio).replace(/\n/g,'</p><p>')}</p>` : '<p>No biography supplied.</p>';
+
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden';    // prevent background scroll
+}
+
+/** Hide modal */
+function closeMemberModal() {
+  modal.classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+/* close on Escape */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && modal.classList.contains('show')) closeMemberModal();
+});
 </script>
 
 </body>
