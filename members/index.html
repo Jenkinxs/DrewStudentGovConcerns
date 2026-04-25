@@ -7,786 +7,448 @@
   <title>Members — Drew SGA</title>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    /* ── MODAL OVERLAY ── */
-  .member-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    display: none;               /* toggled by JS */
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    overflow-y: auto;
-    padding: 2rem;
-    backdrop-filter: blur(4px);
-  }
-  .member-modal.show { display:flex; }
-
-  .member-card {
-    background: var(--surface);
-    border-radius: 12px;
-    max-width: 720px;
-    width: 100%;
-    overflow:hidden;
-    transform: scale(0.9);
-    opacity:0;
-    transition: transform .3s ease, opacity .3s ease;
-  }
-  .member-modal.show .member-card {
-    transform: scale(1);
-    opacity:1;
-  }
-
-  .member-header{
-    display:flex;
-    align-items:center;
-    gap:1.5rem;
-    background:var(--gold-pale);
-    padding:1.5rem;
-  }
-  .member-pic{
-    flex-shrink:0;
-    width:120px;height:120px;
-    border-radius:50%;
-    overflow:hidden;
-    background:linear-gradient(135deg,var(--forest),var(--accent));
-    display:flex;align-items:center;justify-content:center;
-    font-family:'Fraunces',serif;
-    font-size:2rem;color:#fff;
-  }
-  .member-pic img{width:100%;height:100%;object-fit:cover;}
-  .member-info{flex:1;}
-  .member-name{font-family:'Fraunces',serif;font-size:1.6rem;color:var(--forest);}
-  .member-title{font-size:.95rem;color:var(--muted);margin:.4rem 0;}
-  .member-email{font-size:.85rem;color:var(--accent);}
-  .member-body{padding:1.5rem;background:#fff;color:var(--text);}
-  .member-close{
-    background:none;border:none;color:#fff;font-size:1.5rem;
-    cursor:pointer;position:absolute;top:1rem;right:1rem;
-  }
-    :root {
-      --forest:    #1b3d2f;
-      --forest-2:  #244d3c;
-      --forest-3:  #2e5e49;
-      --gold:      #c9a84c;
-      --gold-pale: #f0e4c0;
-      --gold-dim:  rgba(201,168,76,0.15);
-      --bg:        #f2ede4;
-      --surface:   #faf7f2;
-      --border:    #ddd5c4;
-      --text:      #1a1a18;
-      --muted:     #7a7265;
-      --accent:    #3b6e56;
-      --green:     #2a6e47;
-      --red:       #b94040;
+    /* ── ROOT VARIABLES ── */
+    :root{
+      --forest:#1b3d2f;--forest-2:#244d3c;--forest-3:#2e5e49;
+      --gold:#c9a84c;--gold-pale:#f0e4c0;--gold-dim:rgba(201,168,76,.15);
+      --bg:#f2ede4;--surface:#faf7f2;--border:#ddd5c4;--text:#1a1a18;
+      --muted:#7a7265;--accent:#3b6e56;--green:#2a6e47;--red:#b94040;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Plus Jakarta Sans',sans-serif;
+      background:var(--bg);color:var(--text);min-height:100vh;
     }
-
-    a { color: inherit; text-decoration: none; }
-
+    a{color:inherit;text-decoration:none}
     /* ── TOP BAR ── */
-    .topbar {
-      background: var(--forest);
-      color: #fff;
-      padding: 0 2rem;
-      height: 58px;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      border-bottom: 3px solid var(--gold);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+    .topbar{
+      background:var(--forest);color:#fff;padding:0 2rem;height:58px;
+      display:flex;align-items:center;gap:1rem;border-bottom:3px solid var(--gold);
+      position:sticky;top:0;z-index:100;
     }
-
-    .topbar-logo {
-      font-family: 'Fraunces', serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: -0.01em;
-      white-space: nowrap;
-      text-decoration: none;
+    .topbar-logo{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+    .topbar-logo span{color:var(--gold)}
+    .topbar-divider{width:1px;height:22px;background:rgba(255,255,255,.2);flex-shrink:0}
+    .topbar-sub{font-size:.78rem;color:rgba(255,255,255,.55);font-weight:500;letter-spacing:.04em;white-space:nowrap}
+    nav{margin-left:auto;display:flex;align-items:center;gap:.25rem}
+    nav a{
+      font-size:.8rem;font-weight:600;color:rgba(255,255,255,.7);
+      padding:.4rem .85rem;border-radius:6px;transition:background .15s,color .15s;
     }
-    .topbar-logo span { color: var(--gold); }
-
-    .topbar-divider { width: 1px; height: 22px; background: rgba(255,255,255,0.2); flex-shrink: 0; }
-
-    .topbar-sub {
-      font-size: 0.78rem;
-      color: rgba(255,255,255,0.55);
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-    }
-
-    nav { margin-left: auto; display: flex; align-items: center; gap: 0.25rem; }
-
-    nav a {
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px;
-      transition: background 0.15s, color 0.15s;
-    }
-    nav a:hover { background: rgba(255,255,255,0.1); color: #fff; }
-    nav a.active { background: rgba(255,255,255,0.12); color: #fff; }
-
-    .nav-cta {
-      background: var(--gold) !important;
-      color: var(--forest) !important;
-      font-weight: 700 !important;
-    }
-    .nav-cta:hover { opacity: 0.88; background: var(--gold) !important; }
-
+    nav a:hover{background:rgba(255,255,255,.1);color:#fff}
+    nav a.active{background:rgba(255,255,255,.12);color:#fff}
+    .nav-cta{background:var(--gold)!important;color:var(--forest)!important;font-weight:700!important}
+    .nav-cta:hover{opacity:.88;background:var(--gold)!important}
     /* ── HERO ── */
-    .hero {
-      background-image: url('mead.JPG');
-      background-size: cover;
-      background-position: center;
-      color: #fff;
-      padding: 5rem 2rem 4.5rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+    .hero{
+      background:url('mead.JPG') center/cover no-repeat;color:#fff;
+      padding:5rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden;
     }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0,0,0,0.6);
-      background:
-        radial-gradient(ellipse at 75% -10%, rgba(201,168,76,0.18) 0%, transparent 55%),
-        radial-gradient(ellipse at 10% 110%, rgba(59,110,86,0.3) 0%, transparent 50%);
-      pointer-events: none;
+    .hero::before{
+      content:'';position:absolute;inset:0;background:rgba(0,0,0,.6);
+      background:radial-gradient(ellipse at 75% -10%,rgba(201,168,76,.18) 0%,transparent 55%),
+                radial-gradient(ellipse at 10% 110%,rgba(59,110,86,.3) 0%,transparent 50%);
+      pointer-events:none;
     }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0,0,0,0.35);
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 40px 40px;
-      pointer-events: none;
+    .hero::after{
+      content:'';position:absolute;inset:0;background:rgba(0,0,0,.35);
+      background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+                      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:40px 40px;pointer-events:none;
     }
-
-    .hero-inner { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
-
-    .hero-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold);
-      background: rgba(201,168,76,0.12);
-      border: 1px solid rgba(201,168,76,0.3);
-      border-radius: 20px;
-      padding: 0.35rem 1rem;
-      margin-bottom: 1.5rem;
+    .hero-inner{position:relative;z-index:1;max-width:720px;margin:auto}
+    .hero-eyebrow{
+      display:inline-flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;
+      letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+      background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);
+      border-radius:20px;padding:.35rem 1rem;margin-bottom:1.5rem;
     }
-
-    .hero h1 {
-      font-family: 'Fraunces', serif;
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 500;
-      line-height: 1.1;
-      letter-spacing: -0.025em;
-      margin-bottom: 1.25rem;
-    }
-    .hero h1 em { font-style: italic; color: var(--gold); }
-
-    .hero-sub {
-      font-size: 1.05rem;
-      color: rgba(255,255,255,0.68);
-      max-width: 500px;
-      margin: 0 auto 2.5rem;
-      line-height: 1.7;
-    }
-
-    /* ── STATS STRIP ── */
-    .stats-strip {
-      background: var(--gold-pale);
-      border-bottom: 1px solid var(--border);
-      padding: 1.25rem 2rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .stat-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 2.5rem;
-      border-right: 1px solid var(--border);
-    }
-    .stat-item:last-child { border-right: none; }
-
-    .stat-num {
-      font-family: 'Fraunces', serif;
-      font-size: 1.9rem;
-      font-weight: 700;
-      color: var(--forest);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--muted);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-top: 0.25rem;
-    }
-
+    .hero h1{font-family:'Fraunces',serif;font-size:clamp(2.4rem,6vw,3.8rem);font-weight:500;line-height:1.1;letter-spacing:-.025em;margin-bottom:1.25rem}
+    .hero h1 em{font-style:italic;color:var(--gold)}
+    .hero-sub{font-size:1.05rem;color:rgba(255,255,255,.68);max-width:500px;margin:auto 0 2.5rem;line-height:1.7}
+    /* ── STATS ── */
+    .stats-strip{background:var(--gold-pale);border-bottom:1px solid var(--border);padding:1.25rem 2rem;display:flex;justify-content:center}
+    .stat-item{display:flex;flex-direction:column;align-items:center;padding:0 2.5rem;border-right:1px solid var(--border)}
+    .stat-item:last-child{border-right:none}
+    .stat-num{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:700;color:var(--forest);line-height:1}
+    .stat-label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:.25rem}
     /* ── PAGE ── */
-    .page { max-width: 1100px; margin: 0 auto; padding: 3.5rem 1.5rem 5rem; }
-
-    .section-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
+    .page{max-width:1100px;margin:auto;padding:3.5rem 1.5rem 5rem}
+    .section-label{
+      font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);
+      display:flex;align-items:center;gap:.75rem;margin-bottom:1.5rem
     }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-    /* ── SKELETON LOADER ── */
-    .skeleton {
-      background: linear-gradient(90deg, var(--border) 25%, #e8e0d0 50%, var(--border) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 6px;
+    .section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+    .section-intro{margin-bottom:2rem}
+    .section-intro h2{font-family:'Fraunces',serif;font-size:1.75rem;font-weight:500;color:var(--forest);margin-bottom:.5rem}
+    .section-intro h2 em{font-style:italic;color:var(--gold)}
+    .section-intro p{font-size:.9rem;color:var(--muted);line-height:1.65;max-width:600px}
+    .section-gap{margin-top:4rem}
+    /* ── OFFICER GRID ── */
+    .officers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:3.5rem}
+    .officer-card{
+      background:var(--surface);border:1px solid var(--border);border-radius:12px;
+      padding:1.5rem 1rem;text-align:center;box-shadow:0 2px 12px rgba(27,61,47,.06);
+      transition:box-shadow .2s,transform .15s;cursor:pointer
     }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* ── OFFICERS ── */
-    .officers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 3.5rem; }
-
-    .officer-card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.5rem 1rem; text-align: center;
-      box-shadow: 0 2px 12px rgba(27,61,47,0.06);
-      transition: box-shadow 0.2s, transform 0.15s;
+    .officer-card:hover{box-shadow:0 6px 24px rgba(27,61,47,.12);transform:translateY(-2px)}
+    .officer-avatar{
+      width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--accent));
+      display:flex;align-items:center;justify-content:center;margin:auto 0 1rem;
+      font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:#fff;border:3px solid var(--gold-pale);overflow:hidden
     }
-    .officer-card:hover { box-shadow: 0 6px 24px rgba(27,61,47,0.12); transform: translateY(-2px); }
-
-    .officer-avatar {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--forest) 0%, var(--accent) 100%);
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1rem;
-      font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: #fff;
-      border: 3px solid var(--gold-pale);
-      overflow: hidden;
+    .officer-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .officer-name{font-family:'Fraunces',serif;font-size:1rem;font-weight:500;color:var(--forest);margin-bottom:.2rem}
+    .officer-title{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+    .officer-email{font-size:.73rem;color:var(--accent);margin-top:.5rem}
+    /* ── SENATOR GRID ── */
+    .senators-roster{display:grid;gap:1rem;margin-bottom:3.5rem}
+    .senator-card{
+      display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;
+      background:var(--surface);border:1px solid var(--border);border-radius:18px;
+      box-shadow:0 2px 16px rgba(27,61,47,.07);position:relative;
+      transition:background .15s,transform .15s;cursor:pointer
     }
-    .officer-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-
-    .officer-name { font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 500; color: var(--forest); margin-bottom: 0.2rem; }
-    .officer-title { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
-    .officer-email { font-size: 0.73rem; color: var(--accent); margin-top: 0.5rem; }
-
-    /* ── SENATORS ROSTER ── */
-    .senators-roster {
-    display: grid;
-    gap: 1rem;
-    margin-bottom: 3.5rem;
+    .senator-card:hover{background:#f7f2e8;transform:translateY(-1px)}
+    .senator-card::before{
+      content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+      background:var(--gold);border-radius:0 999px 999px 0;opacity:0;
+      transition:opacity .15s
     }
-
-    .senator-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1.25rem 1.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: 0 2px 16px rgba(27,61,47,0.07);
-    position: relative;
-    transition: background 0.15s, transform 0.15s;
+    .senator-card:hover::before{opacity:1}
+    .senator-avatar{
+      width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,var(--forest),var(--accent));
+      display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:#fff;
+      border:2px solid var(--gold-pale);overflow:hidden;flex-shrink:0
     }
-    .senator-card:hover {
-    background: #f7f2e8;
-    transform: translateY(-1px);
+    .senator-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    .senator-details{display:flex;flex-direction:column;gap:.35rem;min-width:0;flex:1}
+    .senator-name{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;color:var(--forest);line-height:1.2}
+    .senator-title{font-size:.86rem;color:var(--muted);line-height:1.4;margin-top:.15rem}
+    .senator-email{
+      margin-left:auto;font-size:.82rem;color:var(--accent);font-weight:600;white-space:nowrap;
+      border:1px solid rgba(59,110,86,.18);padding:.45rem .9rem;border-radius:999px;
+      background:rgba(59,110,86,.06);transition:background .15s,border-color .15s;align-self:center
     }
-    .senator-card::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 4px;
-    background: var(--gold);
-    border-radius: 0 999px 999px 0;
-    opacity: 0;
-    transition: opacity 0.15s;
+    .senator-email:hover{background:rgba(59,110,86,.12);border-color:var(--accent)}
+    /* ── EXPANDABLE CARD (new) ── */
+    .expandable-card{
+      background:var(--surface);border:1px solid var(--border);border-radius:12px;
+      overflow:hidden;cursor:pointer;transition:box-shadow .2s
     }
-    .senator-card:hover::before { opacity: 1; }
-
-    .senator-avatar {
-    width: 62px;
-    height: 62px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--forest) 0%, var(--accent) 100%);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Fraunces', serif; font-size: 1rem; font-weight: 700; color: #fff;
-    border: 2px solid var(--gold-pale);
-    overflow: hidden;
-    flex-shrink: 0;
+    .expandable-card:hover{box-shadow:0 6px 24px rgba(27,61,47,.12)}
+    .expandable-header{
+      display:flex;align-items:center;gap:1.5rem;padding:1.25rem 1.5rem;
     }
-    .senator-avatar img {
-    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+    .expandable-avatar{
+      flex-shrink:0;width:62px;height:62px;border-radius:50%;
+      background:linear-gradient(135deg,var(--forest),var(--accent));
+      display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;
+      font-size:1rem;color:#fff;overflow:hidden
     }
-
-    .senator-details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    min-width: 0;
-    flex: 1;
+    .expandable-info{flex:1;min-width:0}
+    .expandable-name{font-family:'Fraunces',serif;font-size:1.05rem;color:var(--forest)}
+    .expandable-title{font-size:.86rem;color:var(--muted)}
+    .expandable-email{
+      font-size:.82rem;color:var(--accent);white-space:nowrap;
     }
-    .senator-name {
-    font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 600;
-    color: var(--forest); line-height: 1.2;
+    .expandable-body{
+      max-height:0;opacity:0;overflow:hidden;padding:0 1.5rem;background:#fff;color:var(--text);
+      transition:max-height .35s ease,opacity .35s ease .05s,padding .35s;
     }
-    .senator-title {
-    font-size: 0.86rem; color: var(--muted); line-height: 1.4;
-    margin-top: 0.15rem;
+    .expandable-card.open .expandable-body{
+      max-height:500px;opacity:1;padding:1.5rem;
     }
-    .senator-email {
-    margin-left: auto;
-    font-size: 0.82rem; color: var(--accent); font-weight: 600;
-    white-space: nowrap;
-    border: 1px solid rgba(59,110,86,0.18);
-    padding: 0.45rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(59,110,86,0.06);
-    transition: background 0.15s, border-color 0.15s;
-    align-self: center;
-    }
-    .senator-email:hover {
-    background: rgba(59,110,86,0.12);
-    border-color: var(--accent);
-    }
-
-    /* ── EMPTY / ERROR STATE ── */
-    .empty-state {
-      text-align: center; padding: 2.5rem 1rem;
-      color: var(--muted); font-size: 0.88rem;
-    }
-    .empty-state svg { margin-bottom: 0.75rem; opacity: 0.35; }
-
-    .error-state {
-      display: flex; align-items: center; gap: 0.75rem;
-      background: #fdeaea; border: 1px solid rgba(185,64,64,0.2);
-      border-radius: 8px; padding: 1rem 1.25rem;
-      font-size: 0.83rem; color: var(--red);
-    }
-
-    /* ── SECTION INTRO ── */
-    .section-intro {
-      margin-bottom: 2rem;
-    }
-    .section-intro h2 {
-      font-family: 'Fraunces', serif;
-      font-size: 1.75rem;
-      font-weight: 500;
-      color: var(--forest);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-    .section-intro h2 em { font-style: italic; color: var(--gold); }
-    .section-intro p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.65;
-      max-width: 600px;
-    }
-
-    /* ── DIVIDER ── */
-    .section-gap { margin-top: 4rem; }
-
     /* ── CTA BANNER ── */
-    .cta-banner {
-      background: linear-gradient(135deg, var(--forest) 0%, var(--forest-3) 100%);
-      border-radius: 16px; padding: 3rem 2.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 2rem; margin-top: 1rem; margin-bottom: 3.5rem;
-      position: relative; overflow: hidden;
+    .cta-banner{
+      background:linear-gradient(135deg,var(--forest) 0%,var(--forest-3) 100%);
+      border-radius:16px;padding:3rem 2.5rem;display:flex;align-items:center;justify-content:space-between;
+      gap:2rem;margin-top:1rem;margin-bottom:3.5rem;position:relative;overflow:hidden
     }
-    .cta-banner::before {
-      content: ''; position: absolute; right: -60px; top: -60px;
-      width: 280px; height: 280px; border-radius: 50%;
-      background: rgba(201,168,76,0.12); pointer-events: none;
+    .cta-banner::before{
+      content:'';position:absolute;right:-60px;top:-60px;width:280px;height:280px;
+      border-radius:50%;background:rgba(201,168,76,.12);pointer-events:none
     }
-
-    .cta-text { position: relative; z-index: 1; }
-    .cta-text h2 { font-family: 'Fraunces', serif; font-size: 1.7rem; font-weight: 500; color: #fff; margin-bottom: 0.6rem; line-height: 1.2; }
-    .cta-text h2 em { color: var(--gold); font-style: italic; }
-    .cta-text p { font-size: 0.9rem; color: rgba(255,255,255,0.65); max-width: 400px; line-height: 1.65; }
-
-    .cta-actions { display: flex; gap: 0.75rem; flex-shrink: 0; flex-wrap: wrap; position: relative; z-index: 1; }
-
-    .btn-primary {
-      background: var(--gold); color: var(--forest); border: none;
-      border-radius: 8px; padding: 0.8rem 1.75rem;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
-      transition: opacity 0.15s, transform 0.1s;
+    .cta-text h2{font-family:'Fraunces',serif;font-size:1.7rem;font-weight:500;color:#fff;margin-bottom:.6rem;line-height:1.2}
+    .cta-text h2 em{color:var(--gold);font-style:italic}
+    .cta-text p{font-size:.9rem;color:rgba(255,255,255,.65);max-width:400px;line-height:1.65}
+    .btn-primary{
+      background:var(--gold);color:var(--forest);border:none;border-radius:8px;
+      padding:.8rem 1.75rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:700;
+      cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:opacity .15s,transform .1s
     }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-
-    .btn-secondary {
-      background: rgba(255,255,255,0.1); color: #fff;
-      border: 1.5px solid rgba(255,255,255,0.25);
-      border-radius: 8px; padding: 0.8rem 1.5rem;
-      font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.88rem; font-weight: 600;
-      cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;
-      transition: background 0.15s;
+    .btn-primary:hover{opacity:.88;transform:translateY(-1px)}
+    .btn-secondary{
+      background:rgba(255,255,255,.1);color:#fff;border:1.5px solid rgba(255,255,255,.25);
+      border-radius:8px;padding:.8rem 1.5rem;font-family:'Plus Jakarta Sans',sans-serif;font-size:.88rem;font-weight:600;
+      cursor:pointer;display:inline-flex;align-items:center;gap:.5rem;transition:background .15s
     }
-    .btn-secondary:hover { background: rgba(255,255,255,0.18); }
-
+    .btn-secondary:hover{background:rgba(255,255,255,.18)}
     /* ── FOOTER ── */
-    footer { background: var(--forest); color: rgba(255,255,255,0.6); padding: 3rem 2rem 2rem; border-top: 3px solid var(--gold); }
-
-    .footer-inner {
-      max-width: 1100px; margin: 0 auto;
-      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 2.5rem; margin-bottom: 2.5rem;
+    footer{background:var(--forest);color:rgba(255,255,255,.6);padding:3rem 2rem 2rem;border-top:3px solid var(--gold)}
+    .footer-inner{
+      max-width:1100px;margin:auto;display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:2.5rem;margin-bottom:2.5rem
     }
-
-    .footer-brand h3 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.5rem; }
-    .footer-brand h3 span { color: var(--gold); }
-    .footer-brand p { font-size: 0.8rem; line-height: 1.65; max-width: 220px; }
-
-    .footer-col h4 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
-    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.55rem; }
-    .footer-col ul li a { font-size: 0.83rem; color: rgba(255,255,255,0.6); transition: color 0.15s; }
-    .footer-col ul li a:hover { color: #fff; }
-
-    .footer-bottom {
-      max-width: 1100px; margin: 0 auto;
-      padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 0.73rem; flex-wrap: wrap; gap: 0.5rem;
+    .footer-brand h3{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:.5rem}
+    .footer-brand h3 span{color:var(--gold)}
+    .footer-brand p{font-size:.8rem;line-height:1.65;max-width:220px}
+    .footer-col h4{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+    .footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+    .footer-col ul li a{font-size:.83rem;color:rgba(255,255,255,.6);transition:color .15s}
+    .footer-col ul li a:hover{color:#fff}
+    .footer-bottom{
+      max-width:1100px;margin:auto;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.1);
+      display:flex;justify-content:space-between;align-items:center;font-size:.73rem;flex-wrap:wrap;gap:.5rem
     }
-    .footer-bottom a { color: rgba(255,255,255,0.5); transition: color 0.15s; }
-    .footer-bottom a:hover { color: #fff; }
-
+    .footer-bottom a{color:rgba(255,255,255,.5);transition:color .15s}
+    .footer-bottom a:hover{color:#fff}
     /* ── ANIMATIONS ── */
-    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-    .hero-inner > * { animation: fadeUp 0.6s ease both; }
-    .hero-inner > *:nth-child(1) { animation-delay: 0.05s; }
-    .hero-inner > *:nth-child(2) { animation-delay: 0.15s; }
-    .hero-inner > *:nth-child(3) { animation-delay: 0.25s; }
-
+    @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+    .hero-inner>*{animation:fadeUp .6s ease both}
+    .hero-inner>*:nth-child(1){animation-delay:.05s}
+    .hero-inner>*:nth-child(2){animation-delay:.15s}
+    .hero-inner>*:nth-child(3){animation-delay:.25s}
     /* ── RESPONSIVE ── */
-    @media (max-width: 900px) {
-      .senator-card { flex-direction: column; align-items: flex-start; padding: 1rem 1rem; }
-      .senator-email { width: 100%; margin-left: 0; }
-      .senator-card::before { display: none; }
-      .footer-inner { grid-template-columns: 1fr 1fr; }
+    @media(max-width:900px){
+      .senator-card{flex-direction:column;align-items:flex-start;padding:1rem 1rem}
+      .senator-email{width:100%;margin-left:0}
+      .senator-card::before{display:none}
+      .footer-inner{grid-template-columns:1fr 1fr}
     }
-
-    @media (max-width: 640px) {
-      .topbar-sub, .topbar-divider { display: none; }
-      nav a:not(.nav-cta) { display: none; }
-      .cta-banner { flex-direction: column; }
-      .stats-strip { flex-wrap: wrap; gap: 1rem; }
-      .stat-item { border-right: none; padding: 0 1rem; }
-      .footer-inner { grid-template-columns: 1fr; }
-      .hero { padding: 3.5rem 1.25rem 3rem; }
-      .page { padding: 2rem 1rem 3rem; }
-      .senator-card { padding: 1rem 1rem; }
-      .senator-title { display: block; }
-      .officer-card { padding: 0.9rem 1rem; }
-      .officer-email { display: none; }
+    @media(max-width:640px){
+      .topbar-sub,.topbar-divider{display:none}
+      nav a:not(.nav-cta){display:none}
+      .cta-banner{flex-direction:column}
+      .stats-strip{flex-wrap:wrap;gap:1rem}
+      .stat-item{border-right:none;padding:0 1rem}
+      .footer-inner{grid-template-columns:1fr}
+      .hero{padding:3.5rem 1.25rem 3rem}
+      .page{padding:2rem 1rem 3rem}
+      .senator-card{padding:1rem 1rem}
+      .senator-title{display:block}
+      .officer-card{padding:.9rem 1rem}
+      .officer-email{display:none}
     }
   </style>
 </head>
-<div class="member-modal" id="memberModal" aria-hidden="true">
-  <button class="member-close" aria-label="Close modal" onclick="closeMemberModal()">✕</button>
-  <div class="member-card" id="memberCard">
-    <div class="member-header">
-      <div class="member-pic" id="modalPic"></div>
-      <div class="member-info">
-        <div class="member-name" id="modalName"></div>
-        <div class="member-title" id="modalTitle"></div>
-        <a class="member-email" id="modalEmail"></a>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a href="/" class="topbar-logo">Drew <span>SGA</span></a>
+    <div class="topbar-divider"></div>
+    <div class="topbar-sub">Student Government Association</div>
+    <nav>
+      <a href="/history">History</a>
+      <a href="/members">Members</a>
+      <a href="#initiatives">Initiatives</a>
+      <a href="/suggestions" class="nav-cta">Submit Suggestion/Concern</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Meet the <em>Senate</em></h1>
+      <p class="hero-sub">Our Executives and Senators work year‑round to represent your voice, shape campus policy, and build a stronger Drew community.</p>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT -->
+  <main class="page">
+    <!-- EXECUTIVE BOARD -->
+    <div class="section-intro">
+      <h2>Executive Board <em>2025–26</em></h2>
+      <p>The executive board leads the SGA's day‑to‑day operations, chairs committees, and serves as a liaison between the student body and Drew University administration.</p>
+    </div>
+    <div class="section-label">Executive Officers</div>
+    <div class="officers-grid" id="officersGrid">
+      <!-- skeleton loaders (will be replaced) -->
+      <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
+      <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
+      <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
+    </div>
+
+    <!-- SENATORS -->
+    <div class="section-gap">
+      <div class="section-intro">
+        <h2>Student Senators <em>2025–26</em></h2>
+        <p>Senators represent the diverse voices of the Drew student body across residential, commuter, class‑year, and affinity constituencies. Reach out to your senator to bring your concerns to the floor.</p>
+      </div>
+      <div class="section-label">Student Senators</div>
+      <div class="senators-roster" id="senatorsGrid"></div>
+    </div>
+
+    <!-- CTA BANNER -->
+    <div class="cta-banner">
+      <div class="cta-text">
+        <h2>Want to Get Involved? <em>Join Us.</em></h2>
+        <p>SGA elections are held each spring. In the meantime, attend a general body meeting, submit a suggestion, or reach out to any member of the executive board directly.</p>
+      </div>
+      <div class="cta-actions">
+        <a href="mailto:sga@drew.edu" class="btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Email Us Directly
+        </a>
       </div>
     </div>
-    <div class="member-body" id="modalBio"></div>
-  </div>
-</div>
-<body>
+  </main>
 
-<!-- TOP BAR -->
-<header class="topbar">
-  <a href="/" class="topbar-logo">Drew <span>SGA</span></a>
-  <div class="topbar-divider"></div>
-  <div class="topbar-sub">Student Government Association</div>
-  <nav>
-    <a href="/history">History</a>
-    <a href="/members">Members</a>
-    <a href="#initiatives">Initiatives    </a>
-    <a href="/suggestions" class="nav-cta">Submit Suggestion/Concern</a>
-  </nav>
-</header>
-
-<!-- HERO -->
-<section class="hero" style="left: -1px;">
-  <div class="hero-inner">
-    
-    <h1>Meet the <em>Senate</em><br></h1>
-    <p class="hero-sub">Our Executives and Senators work year-round to represent your voice, shape campus policy, and build a stronger Drew community.</p>
-  </div>
-</section>
-
-
-
-<!-- MAIN -->
-<main class="page">
-
-  <!-- EXECUTIVE BOARD -->
-  <div class="section-intro">
-    <h2>Executive Board <em>2025–26</em></h2>
-    <p>The executive board leads the SGA's day-to-day operations, chairs committees, and serves as a liaison between the student body and Drew University administration.</p>
-  </div>
-  <div class="section-label">Executive Officers</div>
-  <div class="officers-grid" id="officersGrid">
-    <!-- Skeleton loaders -->
-    <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
-    <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
-    <div class="officer-card"><div class="officer-avatar skeleton" style="border:none;background:var(--border);flex-shrink:0;"></div><div class="officer-info"><div class="skeleton" style="height:14px;width:55%;margin-bottom:6px;border-radius:4px;"></div><div class="skeleton" style="height:11px;width:35%;border-radius:4px;"></div></div></div>
-  </div>
-
-  <!-- SENATORS -->
-  <div class="section-gap">
-    <div class="section-intro">
-      <h2>Student Senators <em>2025–26</em></h2>
-      <p>Senators represent the diverse voices of the Drew student body across residential, commuter, class-year, and affinity constituencies. Reach out to your senator to bring your concerns to the floor.</p>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <h3>Drew <span>SGA</span></h3>
+        <p>The Student Government Association of Drew University, serving the student body since the 1930s.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Governance</h4>
+        <ul>
+          <li><a href="https://docs.google.com/document/d/1ePOLB9iLWt3NL7QNimzh6SgOOHLwK5fAb7POu6TOA8g/edit?usp=drive_link">Constitution</a></li>
+          <li><a href="https://docs.google.com/document/d/1-mA7wpUPetOc50ByQjAG3rkGjD6lw_4qFq27b4Z-Qoo/edit?usp=drive_link">Bylaws</a></li>
+          <li><a href="https://drive.google.com/drive/folders/1T37qgyUEZ53HvDT4locyv73HNXFNd2Je?usp=drive_link">Past Agendas</a></li>
+          <li><a href="https://docs.google.com/document/d/1DptE6QX7fhF6doVmhAb64nZnBTKMe5E9ylrprfOs5sQ/edit?usp=sharing">Budget & Funding</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Students</h4>
+        <ul>
+          <li><a href="/suggestions">Submit a Suggestion/Concern</a></li>
+          <li><a href="https://drew.edu/academic/student-resources/">Campus Resources</a></li>
+          <li><a href="https://path.drew.edu" target="_blank">The Path</a></li>
+          <li><a href="https://drew.edu/emergency-information/">Emergency Information</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <ul>
+          <li><a href="mailto:sga@drew.edu">sga@drew.edu</a></li>
+          <li><a href="https://www.facebook.com/duclasga/">Facebook</a></li>
+          <li><a href="https://www.instagram.com/duclasga/">Instagram</a></li>
+          <li><a href="https://drew.edu/campus-life/campus-life-student-affairs/" target="_blank">Student Affairs</a></li>
+        </ul>
+      </div>
     </div>
-    <div class="section-label">Student Senators</div>
-    <div class="senators-roster" id="senatorsGrid"></div>
-  </div>
+    <div class="footer-bottom">
+      <span>© <span id="yr"></span> Student Government Association · Drew University · Madison, NJ 07940</span>
+      <span><a href="https://drew.edu/academic/student-resources/center-for-academic-excellence/office-of-accessibility-resources/">Accessibility</a> · <a href="https://drew.edu/privacy-policy/">Privacy</a> · <a href="https://drew.edu" target="_blank">drew.edu</a></span>
+    </div>
+  </footer>
 
-  <!-- CTA -->
-  <div class="cta-banner">
-    <div class="cta-text">
-      <h2>Want to Get Involved? <em>Join Us.</em></h2>
-      <p>SGA elections are held each spring. In the meantime, attend a general body meeting, submit a suggestion, or reach out to any member of the executive board directly.</p>
-    </div>
-    
-    <div class="cta-actions">
-      <a href="mailto:sga@drew.edu" class="btn-secondary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        Email Us Directly
-      </a>
-    </div>
-  </div>
+  <!-- ---------- SCRIPTS ---------- -->
+  <script>
+    // Insert current year
+    document.getElementById('yr').textContent = new Date().getFullYear();
 
-</main>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <h3>Drew <span>SGA</span></h3>
-      <p>The Student Government Association of Drew University, serving the student body since the 1930s.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Governance</h4>
-      <ul><li><a href="https://docs.google.com/document/d/1ePOLB9iLWt3NL7QNimzh6SgOOHLwK5fAb7POu6TOA8g/edit?usp=drive_link">Constitution</a></li><li><a href="https://docs.google.com/document/d/1-mA7wpUPetOc50ByQjAG3rkGjD6lw_4qFq27b4Z-Qoo/edit?usp=drive_link">Bylaws</a></li><li><a href="https://drive.google.com/drive/folders/1T37qgyUEZ53HvDT4locyv73HNXFNd2Je?usp=drive_link">Past Agendas</a></li><li><a href="https://docs.google.com/document/d/1DptE6QX7fhF6doVmhAb64nZnBTKMe5E9ylrprfOs5sQ/edit?usp=sharing">Budget & Funding</a></li></ul>
-    </div>
-    <div class="footer-col">
-      <h4>Students</h4>
-      <ul><li><a href="/suggestions">Submit a Suggestion/Concern</a></li><li><a href="https://drew.edu/academic/student-resources/">Campus Resources</a></li><li><a href="https://path.drew.edu" target="_blank">The Path</a></li><li><a href="https://drew.edu/emergency-information/">Emergency Information</a></li></ul>
-    </div>
-    <div class="footer-col">
-      <h4>Connect</h4>
-      <ul><li><a href="mailto:sga@drew.edu">sga@drew.edu</a></li><li><a href="https://www.facebook.com/duclasga/">Facebook</a></li><li><a href="https://www.instagram.com/duclasga/">Instagram</a></li><li><a href="https://drew.edu/campus-life/campus-life-student-affairs/" target="_blank">Student Affairs</a></li></ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© <span id="yr"></span> Student Government Association · Drew University · Madison, NJ 07940</span>
-    <span><a href="https://drew.edu/academic/student-resources/center-for-academic-excellence/office-of-accessibility-resources/">Accessibility</a> · <a href="https://drew.edu/privacy-policy/">Privacy</a> · <a href="https://drew.edu" target="_blank">drew.edu</a></span>
-  </div>
-</footer>
-
-<script>
-  document.getElementById('yr').textContent = new Date().getFullYear();
-
-  // ── SHEETS API HELPER ────────────────────────────────────────────────
-  async function fetchSheet(tabName) {
-    const range = `${tabName}!A:Z`;
-    const url = `https://sgovsite.t-ra-jenkins3.workers.dev/?range=${encodeURIComponent(range)}`;
-    const res = await fetch(url);
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${res.status} fetching tab "${tabName}"`);
+    // ── SHEETS API HELPER ───────────────────────────────────────
+    async function fetchSheet(tabName){
+      const range = `${tabName}!A:Z`;
+      const url = `https://sgovsite.t-ra-jenkins3.workers.dev/?range=${encodeURIComponent(range)}`;
+      const res = await fetch(url);
+      if(!res.ok){
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err?.error?.message || `HTTP ${res.status} fetching "${tabName}"`);
+      }
+      const json = await res.json();
+      const rows = json.values||[];
+      if(rows.length<2) return [];
+      const headers = rows[0].map(h=>h.trim().toLowerCase());
+      return rows.slice(1)
+        .filter(r=>r.some(c=>c.trim()!==''))
+        .map(r=>{
+          const obj={};
+          headers.forEach((h,i)=>{obj[h]=(r[i]||'').trim();});
+          return obj;
+        });
     }
-    const json = await res.json();
-    const rows = json.values || [];
-    if (rows.length < 2) return [];
-    const headers = rows[0].map(h => h.trim().toLowerCase());
-    return rows.slice(1)
-      .filter(r => r.some(cell => cell.trim() !== ''))
-      .map(r => {
-        const obj = {};
-        headers.forEach((h, i) => { obj[h] = (r[i] || '').trim(); });
-        return obj;
-      });
-  }
 
-  // ── UTILS ────────────────────────────────────────────────────────────
-  function escHtml(str) {
-    return String(str || '')
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function getInitials(name) {
-    if (!name) return '?';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-  }
-
-  function errorHtml(msg) {
-    return `<div class="error-state" style="grid-column:1/-1;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      ${escHtml(msg)}
-    </div>`;
-  }
-
-  // ── RENDER: OFFICERS (horizontal profile rows) ───────────────────────
-function renderOfficers(rows, gridId) {
-  const el = document.getElementById(gridId);
-  if (!rows.length) { /* unchanged */ return; }
-  el.innerHTML = rows.map(p => {
-    const initials = getInitials(p.name);
-    const avatarInner = p.image_url
-      ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
-               onerror="this.parentElement.textContent='${escHtml(initials)}'">`
-      : escHtml(initials);
-    return `
-      <div class="officer-card" onclick='openMemberModal(${JSON.stringify(p)})' style="cursor:pointer;">
-        <div class="officer-avatar">${avatarInner}</div>
-        <div class="officer-info">
-          <div class="officer-name">${escHtml(p.name)}</div>
-          <div class="officer-title">${escHtml(p.title)}</div>
-        </div>
-        ${p.email ? `<a class="officer-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
+    // ── UTILS ─────────────────────────────────────────────────────
+    function escHtml(str){return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+    function getInitials(name){if(!name) return '?';return name.split(' ').map(n=>n[0]).join('').toUpperCase().substring(0,2);}
+    function errorHtml(msg){
+      return `<div class="error-state" style="grid-column:1/-1;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        ${escHtml(msg)}
       </div>`;
-  }).join('');
-}
+    }
 
-// ── RENDER: SENATORS (roster cards) ─────────────────────────────
-function renderSenators(rows, gridId) {
-  const el = document.getElementById(gridId);
-  if (!rows.length) { /* unchanged */ return; }
-  el.innerHTML = rows.map(p => {
-    const initials = getInitials(p.name);
-    const avatarInner = p.image_url
-      ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
+    // ── RENDER OFFICERS (using expandable cards) ───────────────────
+    function renderOfficers(rows, gridId){
+      const el = document.getElementById(gridId);
+      if(!rows.length){el.innerHTML='';return;}
+      el.innerHTML = rows.map(p=>{
+        const initials = getInitials(p.name);
+        const avatar = p.image_url
+          ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
                onerror="this.parentElement.textContent='${escHtml(initials)}'">`
-      : escHtml(initials);
-    return `
-      <div class="senator-card" onclick='openMemberModal(${JSON.stringify(p)})' style="cursor:pointer;">
-        <div class="senator-avatar">${avatarInner}</div>
-        <div class="senator-details">
-          <div class="senator-name">${escHtml(p.name)}</div>
-          <div class="senator-title">${escHtml(p.title)}</div>
-        </div>
-        ${p.email ? `<a class="senator-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
-      </div>`;
-  }).join('');
-}
-
-  // ── INIT ─────────────────────────────────────────────────────────────
-  async function init() {
-    const [officers, senators] = await Promise.allSettled([
-      fetchSheet('Officers'),
-      fetchSheet('Senators'),
-    ]);
-
-    if (officers.status === 'fulfilled') {
-      renderOfficers(officers.value, 'officersGrid');
-    } else {
-      document.getElementById('officersGrid').innerHTML =
-        errorHtml('Could not load officers: ' + officers.reason?.message);
+          : escHtml(initials);
+        const bio = p.bio ? `<p>${escHtml(p.bio).replace(/\n/g,'</p><p>')}</p>` : '<p>No biography supplied.</p>';
+        return `
+          <div class="expandable-card" onclick='toggleCard(this, ${JSON.stringify(p)})'>
+            <div class="expandable-header">
+              <div class="expandable-avatar">${avatar}</div>
+              <div class="expandable-info">
+                <div class="expandable-name">${escHtml(p.name)}</div>
+                <div class="expandable-title">${escHtml(p.title)}</div>
+              </div>
+              ${p.email ? `<a class="expandable-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
+            </div>
+            <div class="expandable-body">${bio}</div>
+          </div>`;
+      }).join('');
     }
 
-    if (senators.status === 'fulfilled') {
-      renderSenators(senators.value, 'senatorsGrid');
-    } else {
-      document.getElementById('senatorsGrid').innerHTML +=
-        errorHtml('Could not load senators: ' + senators.reason?.message);
+    // ── RENDER SENATORS (using expandable cards) ───────────────────
+    function renderSenators(rows, gridId){
+      const el = document.getElementById(gridId);
+      if(!rows.length){el.innerHTML='';return;}
+      el.innerHTML = rows.map(p=>{
+        const initials = getInitials(p.name);
+        const avatar = p.image_url
+          ? `<img src="${escHtml(p.image_url)}" alt="${escHtml(p.name)}"
+               onerror="this.parentElement.textContent='${escHtml(initials)}'">`
+          : escHtml(initials);
+        const bio = p.bio ? `<p>${escHtml(p.bio).replace(/\n/g,'</p><p>')}</p>` : '<p>No biography supplied.</p>';
+        return `
+          <div class="expandable-card" onclick='toggleCard(this, ${JSON.stringify(p)})'>
+            <div class="expandable-header">
+              <div class="expandable-avatar">${avatar}</div>
+              <div class="expandable-info">
+                <div class="expandable-name">${escHtml(p.name)}</div>
+                <div class="expandable-title">${escHtml(p.title)}</div>
+              </div>
+              ${p.email ? `<a class="expandable-email" href="mailto:${escHtml(p.email)}">${escHtml(p.email)}</a>` : ''}
+            </div>
+            <div class="expandable-body">${bio}</div>
+          </div>`;
+      }).join('');
     }
-  }
-  init();
 
-  // ---------- MODAL LOGIC ----------
-const modal = document.getElementById('memberModal');
-const modalPic = document.getElementById('modalPic');
-const modalName = document.getElementById('modalName');
-const modalTitle = document.getElementById('modalTitle');
-const modalEmail = document.getElementById('modalEmail');
-const modalBio = document.getElementById('modalBio');
+    // ── CARD TOGGLE ───────────────────────────────────────────────
+    function toggleCard(cardEl, member){
+      // optional: close other open cards
+      document.querySelectorAll('.expandable-card.open').forEach(open=>{ if(open!==cardEl) open.classList.remove('open'); });
+      cardEl.classList.toggle('open');
+    }
 
-/**
- * Show the modal with data from the clicked member.
- * @param {Object} member – object with keys name,title,email,image_url,bio
- */
-function openMemberModal(member) {
-  // picture / initials
-  if (member.image_url) {
-    modalPic.innerHTML = `<img src="${escHtml(member.image_url)}"
-                           alt="${escHtml(member.name)}"
-                           onerror="this.parentElement.textContent='${escHtml(getInitials(member.name))}'">`;
-  } else {
-    modalPic.textContent = getInitials(member.name);
-  }
-
-  modalName.textContent   = member.name   || '';
-  modalTitle.textContent  = member.title  || '';
-  modalEmail.textContent  = member.email  || '';
-  modalEmail.href          = member.email ? `mailto:${member.email}` : '#';
-  modalBio.innerHTML      = member.bio ? `<p>${escHtml(member.bio).replace(/\n/g,'</p><p>')}</p>` : '<p>No biography supplied.</p>';
-
-  modal.classList.add('show');
-  document.body.style.overflow = 'hidden';    // prevent background scroll
-}
-
-/** Hide modal */
-function closeMemberModal() {
-  modal.classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-/* close on Escape */
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && modal.classList.contains('show')) closeMemberModal();
-});
-</script>
-
+    // ── INITIALISE ────────────────────────────────────────────────
+    async function init(){
+      const [officers, senators] = await Promise.allSettled([
+        fetchSheet('Officers'),
+        fetchSheet('Senators')
+      ]);
+      if(officers.status==='fulfilled'){
+        renderOfficers(officers.value,'officersGrid');
+      }else{
+        document.getElementById('officersGrid').innerHTML = errorHtml('Could not load officers: '+officers.reason?.message);
+      }
+      if(senators.status==='fulfilled'){
+        renderSenators(senators.value,'senatorsGrid');
+      }else{
+        document.getElementById('senatorsGrid').innerHTML = errorHtml('Could not load senators: '+senators.reason?.message);
+      }
+    }
+    init();
+  </script>
 </body>
 </html>
