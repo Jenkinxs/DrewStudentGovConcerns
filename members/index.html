@@ -89,12 +89,14 @@
       background: var(--gold) !important;
       color: var(--forest) !important;
       font-weight: 700 !important;
+      text-align: center;
+      white-space: normal;
     }
     .nav-cta:hover { opacity: 0.88; background: var(--gold) !important; }
 
     /* ── HERO ── */
     .hero {
-      background-image: url('mead.JPG');
+      background-image: url('BC.JPG');
       background-size: cover;
       background-position: center;
       color: #fff;
@@ -102,6 +104,7 @@
       text-align: center;
       position: relative;
       overflow: hidden;
+      
     }
 
     .hero::before {
@@ -143,6 +146,7 @@
       border-radius: 20px;
       padding: 0.35rem 1rem;
       margin-bottom: 1.5rem;
+      
     }
 
     .hero h1 {
@@ -152,6 +156,7 @@
       line-height: 1.1;
       letter-spacing: -0.025em;
       margin-bottom: 1.25rem;
+      text-shadow: 1px 1px #000000
     }
     .hero h1 em { font-style: italic; color: var(--gold); }
 
@@ -436,6 +441,94 @@
     .footer-bottom a { color: rgba(255,255,255,0.5); transition: color 0.15s; }
     .footer-bottom a:hover { color: #fff; }
 
+    /* ── HAMBURGER MENU ── */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.5rem;
+      width: 44px;
+      height: 44px;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin-left: auto;
+      z-index: 101;
+    }
+
+    .hamburger-icon {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .hamburger-icon span {
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .hamburger-btn.active .hamburger-icon span:nth-child(1) {
+      transform: rotate(45deg) translateY(12px);
+    }
+
+    .hamburger-btn.active .hamburger-icon span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger-btn.active .hamburger-icon span:nth-child(3) {
+      transform: rotate(-45deg) translateY(-12px);
+    }
+
+    .mobile-nav {
+      display: none;
+      position: absolute;
+      top: 58px;
+      left: 0;
+      right: 0;
+      background: var(--forest);
+      flex-direction: column;
+      border-bottom: 3px solid var(--gold);
+      max-height: calc(100vh - 58px);
+      overflow-y: auto;
+      z-index: 99;
+    }
+
+    .mobile-nav.active {
+      display: flex;
+    }
+
+    .mobile-nav a {
+      padding: 1rem 2rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.8);
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .mobile-nav a:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .mobile-nav a.nav-cta {
+      background: var(--gold);
+      color: var(--forest);
+      margin: 0.5rem 1rem;
+      border-radius: 6px;
+      border-bottom: none;
+      text-align: center;
+    }
+
+    .mobile-nav a.nav-cta:hover {
+      opacity: 0.88;
+      background: var(--gold);
+    }
+
     /* ── ANIMATIONS ── */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
     .hero-inner > * { animation: fadeUp 0.6s ease both; }
@@ -451,9 +544,10 @@
       .footer-inner { grid-template-columns: 1fr 1fr; }
     }
 
-    @media (max-width: 640px) {
+    @media (max-width: 750px) {
       .topbar-sub, .topbar-divider { display: none; }
-      nav a:not(.nav-cta) { display: none; }
+      nav { display: none; }
+      .hamburger-btn { display: flex; }
       .cta-banner { flex-direction: column; }
       .stats-strip { flex-wrap: wrap; gap: 1rem; }
       .stat-item { border-right: none; padding: 0 1rem; }
@@ -477,10 +571,25 @@
   <nav>
     <a href="/history">History</a>
     <a href="/members">Members</a>
-    <a href="#initiatives">Initiatives    </a>
+    <a href="/#initiatives">Initiatives    </a>
     <a href="/suggestions" class="nav-cta">Submit Suggestion/Concern</a>
   </nav>
+  <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileNav()">
+    <div class="hamburger-icon">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </button>
 </header>
+
+<!-- MOBILE NAVIGATION -->
+<nav class="mobile-nav" id="mobileNav">
+  <a href="/history">History</a>
+  <a href="/members">Members</a>
+  <a href="/#initiatives">Initiatives</a>
+  <a href="/suggestions" class="nav-cta">Submit Suggestion/Concern</a>
+</nav>
 
 <!-- HERO -->
 <section class="hero" style="left: -1px;">
@@ -682,6 +791,22 @@
     }
   }
   init();
+
+  // ── HAMBURGER MENU ───────────────────────────────────────────────
+  function toggleMobileNav() {
+    const btn = document.getElementById('hamburgerBtn');
+    const nav = document.getElementById('mobileNav');
+    btn.classList.toggle('active');
+    nav.classList.toggle('active');
+  }
+
+  // Close mobile nav when a link is clicked
+  document.querySelectorAll('.mobile-nav a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('hamburgerBtn').classList.remove('active');
+      document.getElementById('mobileNav').classList.remove('active');
+    });
+  });
 </script>
 
 </body>
